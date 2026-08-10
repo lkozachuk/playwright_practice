@@ -302,6 +302,7 @@ test.describe('SauceDemo', () => {
         await page.click('[data-test="login-button"]');
 
         await expect(page, 'Login page should have title Swag Labs').toHaveTitle(/Swag Labs/);
+        
         // Assert that the error message is displayed
         const errorMessage = page.locator('[data-test="error"]');
         await expect(errorMessage, 'Error message should be visible on the page').toBeVisible();

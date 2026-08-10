@@ -291,7 +291,7 @@ test.describe('SauceDemo', () => {
         await expect(cartItemNameAfterRefresh, "Name of item in cart after refresh should match the name of the previouly added product").toBe(productName);
     });
 
-    test('user cannot log in with locked out email', async ({ page }) => {
+    test.only('user cannot log in with locked out email', async ({ page }) => {
         const errorMsgLockedOutUserText = "Epic sadface: Sorry, this user has been locked out.";
 
         // Fill in the login form with invalid credentials

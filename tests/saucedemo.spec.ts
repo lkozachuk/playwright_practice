@@ -283,8 +283,6 @@ test.describe('SauceDemo', () => {
         const cartItemName = await page.locator('[data-test="inventory-item-name"]').textContent();
         console.log("Item in cart:", cartItemName);
         await expect(cartItemName, "Name of item in cart should match the name of the added product").toBe(productName);
-
-        // Refresh the cart page
         await page.reload();
 
         // Assert that the correct item is still in the cart after refresh

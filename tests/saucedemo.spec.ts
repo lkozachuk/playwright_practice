@@ -62,7 +62,6 @@ test.describe('SauceDemo', () => {
         const randomIndex = Math.floor(Math.random() * inventoryItemsCount);
         const randomProduct = inventoryItems.nth(randomIndex);
         if (randomIndex > 3) {
-            // scroll down to the product if it's not visible
             await randomProduct.scrollIntoViewIfNeeded();
         }
         const productName = await randomProduct.locator('[data-test="inventory-item-name"]').textContent();
@@ -243,7 +242,6 @@ test.describe('SauceDemo', () => {
         // Select "Price (low to high)" from the sorting dropdown
         await page.click('[data-test="product-sort-container"]');
         await page.locator('[data-test="product_sort_container"] option[value="lohi"]').click();
-        //await page.selectOption('[data-test="product_sort_container"]', 'lohi');
 
         // Get the prices of the products after sorting
         const productPrices = await page.$$eval('.inventory_item_price', prices => prices.map(price => parseFloat(price.textContent.replace('$', ''))));

@@ -27,13 +27,18 @@ test('get started link', async ({ page }) => {
 test('list handling', async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Swag Labs/);
-  const loginCredentials = page.locator("[data-test='login-credentials'] br");
-  const loginCredentialsAmount = await loginCredentials.count();
-  console.log("Login credentials amount:", loginCredentialsAmount);
-  await expect(loginCredentials).toHaveCount(6);
-  const secondLoginCredential = loginCredentials.nth(1);
-  const secondLoginCredentialText = await loginCredentials.nth(1).textContent();
-  console.log("Second login credential:", secondLoginCredentialText);
-  await expect(secondLoginCredential).toHaveText("locked_out_user");
+  const loginCredentialsContainer = page.locator("[data-test='login-credentials']");
+  const fullText = await loginCredentialsContainer.innerText();
+  const loginCredentials = fullText
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .slice(1);
+  console.log("Login credentials amount:", loginCredentials.length);
+  expect(loginCredentials.length).toBe(6);
+
+  const secondLoginCredential = loginCredentials[1];
+  console.log("Second login credential:", secondLoginCredential);
+  expect(secondLoginCredential).toBe("locked_out_user");
 });
 

@@ -290,4 +290,22 @@ test.describe('SauceDemo', () => {
         console.log("Item in cart after refresh:", cartItemNameAfterRefresh);
         await expect(cartItemNameAfterRefresh, "Name of item in cart after refresh should match the name of the previouly added product").toBe(productName);
     });
+
+    test('user cannot log in with locked out email', async ({ page }) => {
+        const errorMsgLockedOutUserText = "Epic sadface: Sorry, this user has been locked out.";
+
+        // Fill in the login form with invalid credentials
+        await page.fill('[data-test="username"]', 'locked_out_user');
+        await page.fill('[data-test="password"]', 'secret_sauce');
+        await page.click('[data-test="login-button"]');
+
+        await expect(page, 'Login page should have title Swag Labs').toHaveTitle(/Swag Labs/);
+        
+        // Assert that the error message is displayed
+        const errorMessage = page.locator('[data-test="error"]');
+        await expect(errorMessage, 'Error message should be visible on the page').toBeVisible();
+        const errorMessageText = await errorMessage.textContent();
+        console.log("Error message:", errorMessageText);
+        await expect(errorMessage, 'Error message should match expected "Epic sadface: Sorry, this user has been locked out."').toHaveText(errorMsgLockedOutUserText);
+    });
 });

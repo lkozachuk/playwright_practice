@@ -1,0 +1,3 @@
+This test file is to test that user is able to upload a file to the Contact Us
+ section during process of submitting a support request, and that the attachment is 
+ correctly received and processed by the system.

@@ -10,7 +10,6 @@ export class ProductsPage {
     readonly productPrices: Locator;
     readonly viewDetailsProductList: Locator;
 
-
     constructor(page: Page) {
         this.page = page;
         this.searchInput = page.getByPlaceholder("Search Product");
@@ -46,5 +45,4 @@ export class ProductsPage {
     getAddToCartButtonById(productId: string): Locator {
         return this.page.locator(`[data-product-id="${productId}"]`).first();
     }
-
 }

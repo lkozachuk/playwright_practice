@@ -15,12 +15,12 @@ export class ContactUsPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.contactForm = page.locator("#contact-form");
-        this.getInTouchTitle = page.locator(".contact-form .title");
-        this.nameInput = this.contactForm.locator("input[name='name']");
-        this.emailInput = this.contactForm.locator("input[name='email']");
-        this.subjectInput = this.contactForm.locator("input[name='subject']");
-        this.messageTextarea = this.contactForm.locator("textarea[name='message']");
+        this.contactForm = page.locator("#form-section #contact-us-form");
+        this.getInTouchTitle = page.getByRole('heading', { name: 'Get In Touch' });
+        this.nameInput = page.getByPlaceholder("Name");
+        this.emailInput = this.contactForm.getByPlaceholder("Email");
+        this.subjectInput = page.getByPlaceholder("Subject");
+        this.messageTextarea = page.getByPlaceholder("Your Message Here");
         this.fileUploadInput = this.contactForm.locator("input[type='file']");
         this.submitButton = this.contactForm.locator("[data-qa='submit-button']");
         this.successMessage = page.locator(".status.alert.alert-success");

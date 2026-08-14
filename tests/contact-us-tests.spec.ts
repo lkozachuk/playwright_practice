@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { HomePage } from "../pages/HomePage";
-import { ContactUsPage } from "../pages/ContactUs";
+import { ContactUsPage } from "../pages/ContactUsPage";
 import { testData } from "../test-data/testData";
 
 test.describe('Contact Us page to leave a feedback', () => {
@@ -9,7 +9,7 @@ test.describe('Contact Us page to leave a feedback', () => {
     });
 
 
-    test('user can submit contact form with file upload', async ({ page }) => {
+    test('User can submit contact form with file upload', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -24,9 +24,13 @@ test.describe('Contact Us page to leave a feedback', () => {
         await (contactUsPage.subjectInput.fill(testData.contactForm.subject));
         await (contactUsPage.messageTextarea.fill(testData.contactForm.message));
         await contactUsPage.fileUploadInput.setInputFiles("test-data/test-file.txt");
-        await contactUsPage.submitButton.click();
 
-        await page.keyboard.press('Enter');
+        page.on('dialog', async dialog => {
+            console.log(dialog.message());
+            await dialog.accept();
+        });
+
+        await contactUsPage.submitButton.click();
         await expect(contactUsPage.successMessage, 'Success message should be visible after form submission').toHaveText(testData.messages.contactUsSuccessMsg);
         await expect(contactUsPage.homeButton, 'Home button should be visible after form submission').toBeVisible();
         await contactUsPage.homeButton.click();

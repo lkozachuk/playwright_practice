@@ -11,7 +11,7 @@ test.describe('Product listing and search', () => {
         baseURL: 'https://automationexercise.com/',
     });
 
-    test('user can search a product by name', async ({ page }) => {
+    test('User can search a product by name', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -28,16 +28,16 @@ test.describe('Product listing and search', () => {
         );
     });
 
-    test('user can open product details page and check product information', async ({ page }) => {
+    test('User can open product details page and check product information', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         const productsPage = new ProductsPage(page);
         await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText("All Products");
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         await productsPage.searchProduct("top");
-        await expect(productsPage.productListTitle).toHaveText("Searched Products");
+        await expect(productsPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
         await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
         await expect(productsPage.productNames.first()).toHaveText(/Blue Top/i);
         await expect(productsPage.productPrices.first()).toHaveText(/Rs. 500/i);
@@ -59,14 +59,14 @@ test.describe('Product listing and search', () => {
         await expect(productDetailsPage.productBrand, 'Product brand should be Brand: Polo').toHaveText("Brand: Polo");
     });
 
-    test('user can add two products to cart and verify the cart total/price/quantity', async ({ page }) => {
+    test('User can add two products to cart and verify the cart total/price/quantity', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         const productsPage = new ProductsPage(page);
         await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText("All Products");
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
         await expect(productsPage.getAddToCartButtonById("1"), 'Add to cart button for the first product should be visible').toBeVisible();
 
@@ -121,14 +121,14 @@ test.describe('Product listing and search', () => {
         await expect(cartPage.cartTableRowProductTotalPrices.nth(1), 'Product total price should be correct').toContainText(secondProductPrice || "Second product price not found");
     });
 
-    test('user can remove a product from cart', async ({ page }) => {
+    test('User can remove a product from cart', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         const productsPage = new ProductsPage(page);
         await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText("All Products");
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
         await expect(productsPage.getAddToCartButtonById("2"), 'Add to cart button for the first product should be visible').toBeVisible();
 

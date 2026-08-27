@@ -22,7 +22,7 @@ test.describe('Contact Us page to leave a feedback', () => {
         await (contactUsPage.nameInput.fill(testData.contactForm.name));
         await (contactUsPage.emailInput.fill(testData.contactForm.email));
         await (contactUsPage.subjectInput.fill(testData.contactForm.subject));
-        await (contactUsPage.messageTextarea.fill(testData.contactForm.message));
+        await (contactUsPage.messageTextArea.fill(testData.contactForm.message));
         await contactUsPage.fileUploadInput.setInputFiles("test-data/test-file.txt");
 
         page.on('dialog', async dialog => {

@@ -28,6 +28,7 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
     baseURL: 'https://www.saucedemo.com',
+    testIdAttribute: 'data-qa',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     //headless: false,     // Uncomment this line to run tests in headed mode (locally) and see the browser UI. Comment it out to run in headless mode (default).

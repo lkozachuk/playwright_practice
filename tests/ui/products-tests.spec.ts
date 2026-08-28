@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { ProductsPage } from "../pages/ProductsPage";
-import { HomePage } from "../pages/HomePage";
-import { ProductsDetailsPage } from "../pages/ProductDetailsPage";
-import { AddedToCartModal } from "../components/AddedToCartModal";
-import { CartPage } from "../pages/CartPage";
-import { testData } from "../test-data/testData";
+import { ProductsPage } from "../../pages/ProductsPage";
+import { HomePage } from "../../pages/HomePage";
+import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
+import { AddedToCartModal } from "../../components/AddedToCartModal";
+import { CartPage } from "../../pages/CartPage";
+import { testData } from "../../test-data/testData";
 
 test.describe('Product listing and search', () => {
     test.use({

@@ -17,4 +17,8 @@ export class HomePage extends BasePage {
         return this.page.getByText(`Logged in as ${name}`);
     }
 
+    async logoutFromAccount(){
+        await this.page.goto("/logout");
+    }
+
 }

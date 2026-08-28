@@ -1,7 +1,7 @@
 import { type Locator, type Page } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
-export class CartPage {
-    readonly page: Page;
+export class CartPage extends BasePage {
     readonly cartTable: Locator;
     readonly cartTableRows: Locator;
     readonly cartTableRowProductNames: Locator;
@@ -9,9 +9,10 @@ export class CartPage {
     readonly cartTableRowProductQuantities: Locator;
     readonly cartTableRowProductTotalPrices: Locator;
     readonly cartTableRowRemoveButtons: Locator;
+    readonly cartEmptyInfo: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.cartTable = page.locator("#cart_info_table");
         this.cartTableRows = this.cartTable.locator("tbody tr");
         this.cartTableRowProductNames = this.cartTableRows.locator("td.cart_description h4 a");
@@ -19,6 +20,11 @@ export class CartPage {
         this.cartTableRowProductQuantities = this.cartTableRows.locator("button");
         this.cartTableRowProductTotalPrices = this.cartTableRows.locator(".cart_total_price");
         this.cartTableRowRemoveButtons = this.cartTableRows.locator("td.cart_delete a");
+        this.cartEmptyInfo = page.locator("#empty_cart");
+    }
+
+    async open() {
+        await this.page.goto("/view_cart");
     }
 
 }

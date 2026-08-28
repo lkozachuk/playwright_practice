@@ -4,6 +4,7 @@ import { BasePage } from "./BasePage";
 export class HomePage extends BasePage {
     readonly slider: Locator;
 
+
     constructor(page: Page) {
         super(page);
         this.slider = page.locator("#slider-carousel");

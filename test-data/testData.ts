@@ -53,5 +53,6 @@ export const testData = {
     messages: {
         contactUsSuccessMsg: "Success! Your details have been submitted successfully.",
         addedToCartMsg: "Your product has been added to cart.",
+        subscribedSuccessMsg: "You have been successfully subscribed!",
     },
 };

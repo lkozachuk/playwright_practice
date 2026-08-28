@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { HomePage } from "../pages/HomePage";
-import { ContactUsPage } from "../pages/ContactUsPage";
-import { testData } from "../test-data/testData";
+import { HomePage } from "../../pages/HomePage";
+import { ContactUsPage } from "../../pages/ContactUsPage";
+import { testData } from "../../test-data/testData";
 
 test.describe('Contact Us page to leave a feedback', () => {
     test.use({

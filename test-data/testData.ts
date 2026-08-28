@@ -8,14 +8,15 @@ export const testData = {
     },
     login: {
         validUser: {
-            email: "test@example.com",
-            password: "Password123",
+            email: "testing@testuser.com",
+            password: "Password123!",
         },
         invalidUser: {
             email: "wrong@example.com",
             password: "wrongpass",
         },
-        loginSignUpTitle: "New User Signup!",
+        signUpTitle: "New User Signup!",
+        loginTitle: "Login to your account",
     },
     signUp: {
         signUpPageTitle: "Enter Account Information",

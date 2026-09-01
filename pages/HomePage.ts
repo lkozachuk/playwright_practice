@@ -3,11 +3,14 @@ import { BasePage } from "./BasePage";
 
 export class HomePage extends BasePage {
     readonly slider: Locator;
-
+    readonly productsList: Locator;
+    readonly viewDetailsProductList: Locator;
 
     constructor(page: Page) {
         super(page);
         this.slider = page.locator("#slider-carousel");
+        this.productsList = page.locator(".product-image-wrapper");
+        this.viewDetailsProductList = this.productsList.locator(".choose a");
     }
 
     async open() {
@@ -22,4 +25,11 @@ export class HomePage extends BasePage {
         await this.page.goto("/logout");
     }
 
+    getProductCardByName(productName: string): Locator {
+        return this.productsList.filter({ hasText: productName }).first();
+    }
+
+    getProductPriceByName(productName: string): Locator {
+        return this.getProductCardByName(productName).locator(".productinfo h2");
+    }
 }

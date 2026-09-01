@@ -8,7 +8,7 @@ test.describe('Contact Us page to leave a feedback', () => {
         baseURL: 'https://automationexercise.com/',
     });
 
-
+    //Test case #6
     test('User can submit contact form with file upload', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();

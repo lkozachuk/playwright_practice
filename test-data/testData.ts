@@ -55,4 +55,7 @@ export const testData = {
         addedToCartMsg: "Your product has been added to cart.",
         subscribedSuccessMsg: "You have been successfully subscribed!",
     },
+    subTitles: {
+        testCasesSubTitle: "Below is the list of test Cases for you to practice the Automation. Click on the scenario for detailed Test Steps:",
+    }
 };

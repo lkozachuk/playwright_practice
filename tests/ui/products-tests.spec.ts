@@ -11,6 +11,7 @@ test.describe('Product listing and search', () => {
         baseURL: 'https://automationexercise.com/',
     });
 
+    //Test case #9
     test('User can search a product by name', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -28,6 +29,7 @@ test.describe('Product listing and search', () => {
         );
     });
 
+    //Test case #8
     test('User can open product details page and check product information', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -59,6 +61,7 @@ test.describe('Product listing and search', () => {
         await expect(productDetailsPage.productBrand, 'Product brand should be Brand: Polo').toHaveText("Brand: Polo");
     });
 
+    //Test case #12
     test('User can add two products to cart and verify the cart total/price/quantity', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -121,6 +124,7 @@ test.describe('Product listing and search', () => {
         await expect(cartPage.cartTableRowProductTotalPrices.nth(1), 'Product total price should be correct').toContainText(secondProductPrice || "Second product price not found");
     });
 
+    //Test case #17
     test('User can remove a product from cart', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();

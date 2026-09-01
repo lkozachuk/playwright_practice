@@ -4,12 +4,13 @@ import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from '../../utils/random';
 
 
-test.describe('User can subscribe on Home page', () => {
+test.describe('Home page tests', () => {
     test.use({
         baseURL: 'https://automationexercise.com/',
     });
 
-    test('User can create a new account and delete it', async ({ page }) => {
+    //Test case #10
+    test('User can subscribe on Home page', async ({ page }) => {
         const email = generateRandomEmail();
 
         const homePage = new HomePage(page);

@@ -12,6 +12,7 @@ test.describe('User login and sign up', () => {
         baseURL: 'https://automationexercise.com/',
     });
 
+    // Test case #1
     test('User can create a new account and delete it', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -49,6 +50,7 @@ test.describe('User login and sign up', () => {
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
     });
 
+    // Test case #3
     test("User can't login with incorrect email or password", async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -75,6 +77,7 @@ test.describe('User login and sign up', () => {
         await expect(homePage.getLoggedInText("Test"), 'User should be logged in').toBeVisible();
     });
 
+    //Test case #4
     test("User can logout from account", async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
@@ -92,6 +95,7 @@ test.describe('User login and sign up', () => {
         await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
     });
 
+    //Test case #5
     test("User can't create a new account with already registered email", async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();

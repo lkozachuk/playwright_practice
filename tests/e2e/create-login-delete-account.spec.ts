@@ -5,11 +5,12 @@ import { HomePage } from '../../pages/HomePage';
 import { LoginPage } from '../../pages/LoginPage';
 import { DeleteAccountPage } from '../../pages/DeleteAccountPage';
 
-test.describe('Account creation via API, login and delete via UI', () => {
+test.describe('E2E scenarios, combination of API + UI flows', () => {
     test.use({
         baseURL: 'https://automationexercise.com/',
     });
 
+    //Test case #2
     test('User created via API can login and delete account via UI', async ({ request, page }) => {
         const name = 'Test';
         const email = generateRandomEmail();

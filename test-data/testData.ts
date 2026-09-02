@@ -54,8 +54,21 @@ export const testData = {
         contactUsSuccessMsg: "Success! Your details have been submitted successfully.",
         addedToCartMsg: "Your product has been added to cart.",
         subscribedSuccessMsg: "You have been successfully subscribed!",
+        checkoutModalDescription: "Register / Login account to proceed on checkout.",
+        checkoutOrderComment: "No need to call me for order confirmation. All provided details above are valid",
+        successOrderPlacementMsg: "Your order has been placed successfully!",
+        orderPlaced: "Order Placed!",
     },
     subTitles: {
         testCasesSubTitle: "Below is the list of test Cases for you to practice the Automation. Click on the scenario for detailed Test Steps:",
-    }
+    },
+    payment: {
+        validCreditCard: {
+            name: "Test Kotest",
+            cardNumber: "5111111111111118",
+            cvv: "100",
+            expirationMonth: "01",
+            expirationYear: "2039"
+        },
+    },
 };

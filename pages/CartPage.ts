@@ -10,6 +10,7 @@ export class CartPage extends BasePage {
     readonly cartTableRowProductTotalPrices: Locator;
     readonly cartTableRowRemoveButtons: Locator;
     readonly cartEmptyInfo: Locator;
+    readonly cartProceedCheckout: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -21,6 +22,7 @@ export class CartPage extends BasePage {
         this.cartTableRowProductTotalPrices = this.cartTableRows.locator(".cart_total_price");
         this.cartTableRowRemoveButtons = this.cartTableRows.locator("td.cart_delete a");
         this.cartEmptyInfo = page.locator("#empty_cart");
+        this.cartProceedCheckout = page.getByText("Proceed To Checkout");
     }
 
     async open() {

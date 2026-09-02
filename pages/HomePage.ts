@@ -21,7 +21,7 @@ export class HomePage extends BasePage {
         return this.page.getByText(`Logged in as ${name}`);
     }
 
-    async logoutFromAccount(){
+    async logoutFromAccount() {
         await this.page.goto("/logout");
     }
 
@@ -31,5 +31,9 @@ export class HomePage extends BasePage {
 
     getProductPriceByName(productName: string): Locator {
         return this.getProductCardByName(productName).locator(".productinfo h2");
+    }
+
+    addToCartProductById(productId: string): Locator {
+        return this.page.locator(`[data-product-id="${productId}"]`).first();
     }
 }

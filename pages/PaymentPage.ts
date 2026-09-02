@@ -1,4 +1,4 @@
-import { type Locator, type Page } from "@playwright/test";
+import { type Locator, type Page, type Download } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 export class PaymentPage extends BasePage {
@@ -9,7 +9,9 @@ export class PaymentPage extends BasePage {
     readonly cardExpiryMonth: Locator;
     readonly cardExpiryYear: Locator;
     readonly payAndConfirmBtn: Locator;
-    readonly orderPlacedTitle: Locator
+    readonly orderPlacedTitle: Locator;
+    readonly downloadInvoiceBtn: Locator;
+    readonly continueBtn: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -21,6 +23,8 @@ export class PaymentPage extends BasePage {
         this.cardExpiryYear = page.getByTestId("expiry-year");
         this.payAndConfirmBtn = page.getByTestId("pay-button");
         this.orderPlacedTitle = page.getByTestId('order-placed');
+        this.downloadInvoiceBtn = page.getByRole('link', { name: 'Download Invoice' })
+        this.continueBtn = page.getByTestId("continue-button");
     }
 
     async fillCreditCardData(nameOnCard: string, cardNumber: string, cardCVV: string, expiryMonth: string, expiryYear: string) {
@@ -31,5 +35,11 @@ export class PaymentPage extends BasePage {
         await this.cardExpiryYear.fill(expiryYear);
         await this.payAndConfirmBtn.click();
     }
+
+    async downloadInvoice(): Promise<Download> {
+    const downloadPromise = this.page.waitForEvent('download');
+    await this.downloadInvoiceBtn.click();
+    return await downloadPromise;
+}
 
 }

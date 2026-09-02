@@ -1,13 +1,21 @@
+#  lines 15-18, 28-29, and 35 are commented out to avoid running tests in parallel for each browser, which can cause issues with the test environment. Uncomment them if you want to run tests in parallel for each browser.
 name: Playwright Tests
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch: {} # let to trigger it manually from the Actions tab
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     browser: [chromium, firefox, webkit]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -17,11 +25,14 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+    # name: Run Playwright tests
+    #   run: npx playwright test --project=${{ matrix.browser }}
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
+        # name: playwright-report-${{ matrix.browser }}
         name: playwright-report
         path: playwright-report/
         retention-days: 30

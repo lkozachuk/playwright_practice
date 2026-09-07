@@ -5,12 +5,20 @@ export class HomePage extends BasePage {
     readonly slider: Locator;
     readonly productsList: Locator;
     readonly viewDetailsProductList: Locator;
+    readonly leftSidebar: Locator;
+    readonly categoryProductsList: Locator;
+    readonly womenCategory: Locator;
+    readonly womenDressSubcategory: Locator;
 
     constructor(page: Page) {
         super(page);
         this.slider = page.locator("#slider-carousel");
         this.productsList = page.locator(".product-image-wrapper");
         this.viewDetailsProductList = this.productsList.locator(".choose a");
+        this.leftSidebar = page.locator(".left-sidebar");
+        this.categoryProductsList = page.locator(".category-products");
+        this.womenCategory = page.getByRole('link', { name: 'Women' });
+        this.womenDressSubcategory = page.locator('#Women').getByRole('link', { name: 'Dress' });
     }
 
     async open() {

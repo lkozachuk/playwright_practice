@@ -11,6 +11,11 @@ export class ProductsDetailsPage extends BasePage{
     readonly productBrand: Locator;
     readonly inputQuantity: Locator;
     readonly addToCartBtn: Locator;
+    readonly writeYourReviewTitle: Locator;
+    readonly writeYourReviewNameInput: Locator;
+    readonly writeYourReviewEmailInput: Locator;
+    readonly writeYourReviewTextInput: Locator;
+    readonly writeYourReviewSubmitBtn: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -23,6 +28,18 @@ export class ProductsDetailsPage extends BasePage{
         this.productBrand = page.locator(".product-information p:has-text('Brand')");
         this.inputQuantity = page.locator("#quantity");
         this.addToCartBtn = page.getByRole("button", { name: "Add to cart" });
+        this.writeYourReviewTitle = page.getByText("Write Your Review");
+        this.writeYourReviewNameInput = page.getByPlaceholder("Your Name");
+        this.writeYourReviewEmailInput = page.getByPlaceholder('Email Address', { exact: true });
+        this.writeYourReviewTextInput = page.getByPlaceholder("Add Review Here!");
+        this.writeYourReviewSubmitBtn = page.getByRole("button", { name: "Submit" });
+    }
+
+    async leaveProductReview(name: string, email: string, review: string) {
+        await this.writeYourReviewNameInput.fill(name);
+        await this.writeYourReviewEmailInput.fill(email);
+        await this.writeYourReviewTextInput.fill(review);
+        await this.writeYourReviewSubmitBtn.click();
     }
 
 }

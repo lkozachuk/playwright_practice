@@ -61,6 +61,7 @@ export const testData = {
     },
     subTitles: {
         testCasesSubTitle: "Below is the list of test Cases for you to practice the Automation. Click on the scenario for detailed Test Steps:",
+
     },
     payment: {
         validCreditCard: {
@@ -71,4 +72,10 @@ export const testData = {
             expirationYear: "2039"
         },
     },
+    products:{
+        dressProductTitle: "Women -  Dress Products",
+        jeansProductTitle: "Men -  Jeans Products",
+        reviewName: "Test User",
+        reviewDescription: "This is a test review for the product.",
+    }
 };

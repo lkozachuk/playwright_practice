@@ -5,6 +5,7 @@ import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 import { testData } from "../../test-data/testData";
+import { generateRandomEmail } from "../../utils/random";
 
 test.describe('Product listing and search', () => {
     test.use({
@@ -193,6 +194,51 @@ test.describe('Product listing and search', () => {
         await expect(cartPage.cartTableRowProductPrices.nth(0), 'Remaining product price on Cart page should be the same as on the products page').toContainText(firstProductPrice || "First product price not found");
         await expect(cartPage.cartTableRowProductQuantities.nth(0), 'Remaining product quantity in cart should be 1').toHaveText("1");
         await expect(cartPage.cartTableRowProductTotalPrices.nth(0), 'Remaining product total price should be correct').toContainText(firstProductPrice || "First product price not found");
+    });
+
+    //Test case #19
+    test('User can view brand products', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        const productsPage = new ProductsPage(page);
+        await productsPage.open();
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await page.evaluate(() => window.scrollBy(0, 700));
+        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+        await expect(productsPage.brandsSection, 'User should see brands section').toContainText("Brands");
+        await productsPage.selectBrand("Polo");
+        await productsPage.closeGoogleVignette();
+        await expect(productsPage.productListTitle, 'Product list title should be "Brand - Polo Products"').toHaveText(testData.products.poloProductsTitle);
+        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+        await productsPage.selectBrand("Madame");
+        await productsPage.closeGoogleVignette();
+        await expect(productsPage.productListTitle, 'Product list title should be "Brand - Madame Products"').toHaveText(testData.products.madameProductsTitle);
+        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+    });
+
+    //Test case #21
+    test('User can add a review to a product', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+        const email = generateRandomEmail();
+
+        const productsPage = new ProductsPage(page);
+        await productsPage.open();
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        // Click on the first product to open its details page
+        await productsPage.viewDetailsProductList.first().click();
+        const productDetailsPage = new ProductsDetailsPage(page);
+        await page.evaluate(() => window.scrollBy(0, 500));
+        await page.waitForFunction(() => window.scrollY >= 500);
+        await productDetailsPage.closeGoogleVignette();
+        await expect(productDetailsPage.writeYourReviewTitle, 'Write Your Review title should be visible').toBeVisible();
+        await expect(productDetailsPage.writeYourReviewTitle, 'Write Your Review title should be visible').toHaveText("Write Your Review");
+        await productDetailsPage.leaveProductReview(testData.products.reviewName, email, testData.products.reviewDescription);
+        await expect(productDetailsPage.page.getByText("Thank you for your review.")).toBeVisible();
+
     });
 
 });

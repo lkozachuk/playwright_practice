@@ -1,7 +1,7 @@
 import { type Locator, type Page } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
-export class ProductsPage {
-    readonly page: Page;
+export class ProductsPage extends BasePage {
     readonly searchInput: Locator;
     readonly searchButton: Locator;
     readonly productList: Locator;
@@ -9,9 +9,12 @@ export class ProductsPage {
     readonly productListTitle: Locator;
     readonly productPrices: Locator;
     readonly viewDetailsProductList: Locator;
+    readonly menCategory: Locator;
+    readonly menJeansSubcategory: Locator;
+    readonly brandsSection: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.searchInput = page.getByPlaceholder("Search Product");
         this.searchButton = page.locator("#submit_search");
         this.productList = page.locator(".product-image-wrapper");
@@ -19,6 +22,9 @@ export class ProductsPage {
         this.productListTitle = page.locator("h2.title");
         this.productPrices = this.productList.locator(".productinfo h2");
         this.viewDetailsProductList = this.productList.locator(".choose a");
+        this.menCategory = page.locator('a[href="#Men"]');
+        this.menJeansSubcategory = page.getByRole('link', { name: 'Jeans' });
+        this.brandsSection = page.locator('.brands_products');
     }
 
     async open() {
@@ -44,5 +50,10 @@ export class ProductsPage {
 
     getAddToCartButtonById(productId: string): Locator {
         return this.page.locator(`[data-product-id="${productId}"]`).first();
+    }
+
+    async selectBrand(brandName: string) {
+        const brandLink = this.brandsSection.getByRole('link', { name: brandName });
+        await brandLink.click();
     }
 }

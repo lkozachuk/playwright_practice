@@ -233,6 +233,7 @@ test.describe('Product listing and search', () => {
         const productDetailsPage = new ProductsDetailsPage(page);
         await page.evaluate(() => window.scrollBy(0, 500));
         await page.waitForFunction(() => window.scrollY >= 500);
+        await productDetailsPage.closeGoogleVignette();
         await expect(productDetailsPage.writeYourReviewTitle, 'Write Your Review title should be visible').toBeVisible();
         await expect(productDetailsPage.writeYourReviewTitle, 'Write Your Review title should be visible').toHaveText("Write Your Review");
         await productDetailsPage.leaveProductReview(testData.products.reviewName, email, testData.products.reviewDescription);

@@ -3,7 +3,8 @@ import { HomePage } from "../../pages/HomePage";
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from '../../utils/random';
 import { ProductsPage } from "../../pages/ProductsPage";
-
+import { AddedToCartModal } from "../../components/AddedToCartModal";
+import { CartPage } from "../../pages/CartPage";
 
 test.describe('Home page tests', () => {
     test.use({
@@ -49,6 +50,34 @@ test.describe('Home page tests', () => {
         await productsPage.menJeansSubcategory.click();
         await expect(productsPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
         await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+    });
+
+    //Test case #22
+    test('User can add product from Recommended items section to Cart', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await homePage.recommendedItems.scrollIntoViewIfNeeded();
+        await expect(homePage.recommendedItems, 'Section should have title "Recommended Items"').toContainText('recommended items');
+        const recommendedItemName = await homePage.productNameInRecommendedItems.first().textContent();
+        const recommendedItemPrice = await homePage.productPriceInRecommendedItems.first().textContent();
+        await homePage.addtoCartVisibleRecommendedItem();
+
+        const modal = new AddedToCartModal(page);
+        await modal.waitForOpen();
+        await expect(modal.modalTitle).toHaveText("Added!");
+        await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+        await modal.clickViewCart();
+
+        const cartPage = new CartPage(page);
+        await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
+        await expect(cartPage.cartTableRows, 'There should be exactly two products in the cart').toHaveCount(1);
+        console.log("Product name: ", await cartPage.cartTableRowProductNames.nth(0).textContent());
+        await expect(cartPage.cartTableRowProductNames.nth(0), 'First product name in cart should match the first added product').toContainText(recommendedItemName || "Recommended item name not found");
+
+        await expect(cartPage.cartTableRowProductPrices.nth(0), 'Product price on Cart page should be the same as on the products page').toContainText(recommendedItemPrice || "Recommended item price not found");
+        await expect(cartPage.cartTableRowProductQuantities.nth(0), 'First product quantity in cart should be 1').toHaveText("1");
+        await expect(cartPage.cartTableRowProductTotalPrices.nth(0), 'Product total price should be correct').toContainText(recommendedItemPrice || "Recommended item price not found");
+
     });
 
 });

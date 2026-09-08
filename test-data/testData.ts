@@ -77,5 +77,7 @@ export const testData = {
         jeansProductTitle: "Men -  Jeans Products",
         reviewName: "Test User",
         reviewDescription: "This is a test review for the product.",
+        poloProductsTitle: "Brand - Polo Products",
+        madameProductsTitle: "Brand - Madame Products",
     }
 };

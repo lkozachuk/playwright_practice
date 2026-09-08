@@ -11,6 +11,7 @@ export class ProductsPage extends BasePage {
     readonly viewDetailsProductList: Locator;
     readonly menCategory: Locator;
     readonly menJeansSubcategory: Locator;
+    readonly brandsSection: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -23,6 +24,7 @@ export class ProductsPage extends BasePage {
         this.viewDetailsProductList = this.productList.locator(".choose a");
         this.menCategory = page.locator('a[href="#Men"]');
         this.menJeansSubcategory = page.getByRole('link', { name: 'Jeans' });
+        this.brandsSection = page.locator('.brands_products');
     }
 
     async open() {
@@ -48,5 +50,10 @@ export class ProductsPage extends BasePage {
 
     getAddToCartButtonById(productId: string): Locator {
         return this.page.locator(`[data-product-id="${productId}"]`).first();
+    }
+
+    async selectBrand(brandName: string) {
+        const brandLink = this.brandsSection.getByRole('link', { name: brandName });
+        await brandLink.click();
     }
 }

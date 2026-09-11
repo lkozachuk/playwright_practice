@@ -80,4 +80,45 @@ test.describe('Home page tests', () => {
 
     });
 
+    //Test case #25
+    test('User can scroll up using "Arrow" button', async ({ page, browserName }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+        await expect(homePage.subscriptionFieldName.scrollIntoViewIfNeeded());
+        await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
+        await expect(homePage.scrollUpButton, 'Scroll Up button should be visible after scrolling down').toBeVisible();
+        await homePage.closeGoogleVignette();
+        const scrollYBottom = await page.evaluate(() => window.scrollY);
+        expect(scrollYBottom, 'Page should be scrolled down after pressing End').toBeGreaterThan(0);
+        await homePage.scrollUpButton.click();
+        await homePage.closeGoogleVignette();
+        if (browserName === 'webkit' && await homePage.scrollUpButton.isVisible()) {
+            await homePage.scrollUpButton.click();
+        }
+        await expect(homePage.logo, 'Logo should be visible after clicking Scroll Up button').toBeVisible();
+        await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
+        await expect(homePage.scrollUpButton, 'Scroll Up button should be visible after scrolling down').not.toBeVisible();
+
+        const scrollUpYAfterClick = await page.evaluate(() => window.scrollY);
+        expect(scrollUpYAfterClick, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
+    });
+
+    //Test case #26
+    test('User can scroll up without using "Arrow" button', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+        await page.keyboard.press('End');
+        await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
+        await expect(homePage.subscriptionBtn, 'User should see Subscription button').toBeVisible();
+        await homePage.closeGoogleVignette();
+        const scrollYBottom = await page.evaluate(() => window.scrollY);
+        expect(scrollYBottom, 'Page should be scrolled down after pressing End').toBeGreaterThan(0);
+        await expect(homePage.slider.scrollIntoViewIfNeeded());
+        await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
+        await expect(homePage.scrollUpButton, 'Scroll Up button should be visible after scrolling down').not.toBeVisible();
+        const scrollUpYAfterClick = await page.evaluate(() => window.scrollY);
+        expect(scrollUpYAfterClick, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
+    });
 });

@@ -6,6 +6,7 @@ export class BasePage {
     readonly subscriptionInput: Locator;
     readonly subscriptionBtn: Locator;
     readonly subscribeSuccessMsg: Locator;
+    readonly closeAdvertisementBtn: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -13,18 +14,37 @@ export class BasePage {
         this.subscriptionInput = page.getByPlaceholder("Your email address");
         this.subscriptionBtn = page.locator("#subscribe");
         this.subscribeSuccessMsg = page.locator('.alert-success');
+        this.closeAdvertisementBtn = page.frameLocator('iframe[id^="aswift_"]').getByRole('button', { name: 'Close ad' });
     }
 
     async closeAdvertisement() {
         for (const frame of this.page.frames()) {
-            const closeButton = frame.getByText('Close', { exact: true });
+            const closeButton = frame.getByText('Close', { exact: true }).first();
 
-            if (await closeButton.count() > 0) {
-                if (await closeButton.isVisible()) {
-                    await closeButton.click();
-                }
+            try {
+                await closeButton.waitFor({
+                    state: 'visible',
+                    timeout: 3000
+                });
+
+                await closeButton.click();
                 return;
+            } catch {
+                // No close button in this frame — continue
             }
         }
     }
+
+    async closeGoogleVignette() {
+        if (this.page.url().includes('#google_vignette')) {
+            for (const frame of this.page.frames()) {
+                const closeBtn = frame.getByRole('button', { name: 'Close ad' });
+                if (await closeBtn.isVisible().catch(() => false)) {
+                    await closeBtn.click();
+                    break;
+                }
+            }
+        }
+    }
+
 }

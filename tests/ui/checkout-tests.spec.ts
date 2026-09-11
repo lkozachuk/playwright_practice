@@ -127,7 +127,7 @@ test.describe('Checkout page tests', () => {
         await expect(deleteAccountPage.title, 'Delete Account page title should be visible').toBeVisible();
         await expect(deleteAccountPage.title, 'Delete Account page should have title').toHaveText(testData.accountDeleted.title);
         await deleteAccountPage.continueBtn.click();
-        await homePage.closeAdvertisement();
+        await homePage.closeGoogleVignette();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
     });
 

@@ -270,12 +270,13 @@ test.describe('SauceDemo', () => {
             await randomProduct.scrollIntoViewIfNeeded();
         }
         const productName = await randomProduct.locator('[data-test="inventory-item-name"]').textContent();
-        console.log("Adding item to cart:", productName);
+        console.log("Adding item to cart:", productName); 
         await randomProduct.getByRole('button', { name: 'Add to cart' }).click();
 
         // Navigate to the cart page
         await page.click('[data-test="shopping-cart-link"]');
         await expect(page, "User should be redirected to the cart page").toHaveURL(/cart/);
+        await expect(page.locator('[data-test="inventory-item"]').first(), "Added item should be visible in the cart").toBeVisible();
 
         // Assert that the correct item is in the cart
         const cartItemName = await page.locator('[data-test="inventory-item-name"]').textContent();

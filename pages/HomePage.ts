@@ -15,6 +15,7 @@ export class HomePage extends BasePage {
     readonly productPriceInRecommendedItems: Locator;
     readonly productNameInRecommendedItems: Locator;
     readonly scrollUpButton: Locator;
+    readonly logo: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -31,6 +32,7 @@ export class HomePage extends BasePage {
         this.productPriceInRecommendedItems = this.activeRecommendedItem.locator('h2');
         this.productNameInRecommendedItems = this.activeRecommendedItem.locator('p');
         this.scrollUpButton = page.locator('#scrollUp');
+        this.logo = page.getByRole('link', { name: 'Website for automation practice' });
     }
 
     async open() {

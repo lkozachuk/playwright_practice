@@ -6,6 +6,9 @@ import { generateRandomEmail } from '../../utils/random';
 import { SignUpPage } from "../../pages/SignUpPage";
 import { AccountCreatedPage } from "../../pages/AccountCreatedPage";
 import { DeleteAccountPage } from "../../pages/DeleteAccountPage";
+import { ProductsPage } from "../../pages/ProductsPage";
+import { AddedToCartModal } from "../../components/AddedToCartModal";
+import { CartPage } from "../../pages/CartPage";
 
 test.describe('User login and sign up', () => {
     test.use({
@@ -111,4 +114,45 @@ test.describe('User login and sign up', () => {
         await expect(loginPage.errorSignUpMsg, "Error Sign Up message should be highlighted in red").toHaveCSS("color", "rgb(255, 0, 0)")
     });
 
+    //Test case #20
+    test("User can see added product in the cart after log in to account", async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        const productsPage = new ProductsPage(page);
+        await productsPage.open();
+        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await productsPage.searchProduct(testData.search.sleevelessDressProduct);
+        await expect(productsPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
+        await expect(productsPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
+        await expect(productsPage.productList, 'There should be exactly one product displayed').toHaveCount(1);
+        await expect(productsPage.productNames.first()).toHaveText(new RegExp(testData.search.sleevelessDressProduct, "i"));
+        await productsPage.getAddToCartButtonById("3").click();
+
+        const modal = new AddedToCartModal(page);
+        await modal.waitForOpen();
+        await expect(modal.modalTitle).toHaveText("Added!");
+        await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+        await modal.clickContinueShopping();
+        await expect(modal.modal).toBeHidden();
+
+        const cartPage = new CartPage(page);
+        await cartPage.open();
+        await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
+        await expect(cartPage.cartTableRows, 'There should be exactly one product in the cart').toHaveCount(1);
+        await expect(cartPage.cartTableRowProductNames.nth(0), 'Product name in cart should match the first added product').toContainText(testData.search.sleevelessDressProduct);
+
+        const loginPage = new LoginPage(page);
+        await loginPage.open();
+        await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
+        await loginPage.login(testData.login.validUser.email, testData.login.validUser.password);
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+        await expect(homePage.getLoggedInText("Test"), 'User should be logged in').toBeVisible();
+
+        await cartPage.open();
+        await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
+        await expect(cartPage.cartTableRows, 'There should be exactly one product in the cart').toHaveCount(1);
+        await expect(cartPage.cartTableRowProductNames.nth(0), 'Product name in cart should match the first added product').toContainText(testData.search.sleevelessDressProduct);
+    });
 });

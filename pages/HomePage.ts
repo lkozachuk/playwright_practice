@@ -14,6 +14,7 @@ export class HomePage extends BasePage {
     readonly addToCartButtonInRecommendedItems: Locator;
     readonly productPriceInRecommendedItems: Locator;
     readonly productNameInRecommendedItems: Locator;
+    readonly scrollUpButton: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -29,6 +30,7 @@ export class HomePage extends BasePage {
         this.addToCartButtonInRecommendedItems = this.activeRecommendedItem.locator('.add-to-cart');
         this.productPriceInRecommendedItems = this.activeRecommendedItem.locator('h2');
         this.productNameInRecommendedItems = this.activeRecommendedItem.locator('p');
+        this.scrollUpButton = page.locator('#scrollUp');
     }
 
     async open() {

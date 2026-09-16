@@ -10,7 +10,7 @@ import { generateRandomEmail } from "../../utils/random";
 test.describe('Product listing and search', () => {
 
     //Test case #9
-    test('User can search a product by name', async ({ page }) => {
+    test('User can search a product by name', { tag: '@smoke' }, async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -60,7 +60,7 @@ test.describe('Product listing and search', () => {
     });
 
     //Test case #12
-    test('User can add two products to cart and verify the cart total/price/quantity', async ({ page }) => {
+    test('User can add two products to cart and verify the cart total/price/quantity', { tag: '@smoke' }, async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -123,7 +123,7 @@ test.describe('Product listing and search', () => {
     });
 
     //Test case #17
-    test('User can remove a product from cart', async ({ page }) => {
+    test('User can remove a product from cart', { tag: '@smoke' }, async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -216,7 +216,7 @@ test.describe('Product listing and search', () => {
     });
 
     //Test case #21
-    test('User can add a review to a product', async ({ page }) => {
+    test('User can add a review to a product', { tag: '@smoke' }, async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();

@@ -6,7 +6,7 @@ import { ProductsPage } from "../../pages/ProductsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 
-test.describe('Home page tests', () => {
+test.describe('Home page tests', { tag: '@smoke' }, () => {
 
     //Test case #10
     test('User can subscribe on Home page', async ({ page }) => {

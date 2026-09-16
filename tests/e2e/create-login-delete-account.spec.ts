@@ -213,6 +213,7 @@ test.describe('E2E scenarios, combination of API + UI flows', () => {
         const download = await paymentPage.downloadInvoice();
         expect(download.suggestedFilename()).toBeTruthy();
         await paymentPage.continueBtn.click();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         const deleteAccountPage = new DeleteAccountPage(page);
         await deleteAccountPage.open();

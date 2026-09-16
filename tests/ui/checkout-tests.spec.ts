@@ -12,7 +12,7 @@ import { CheckoutPage } from "../../pages/CheckoutPage";
 import { PaymentPage } from "../../pages/PaymentPage";
 import { DeleteAccountPage } from "../../pages/DeleteAccountPage";
 
-test.describe('Checkout page tests', () => {
+test.describe('Checkout page tests', { tag: '@smoke' }, () => {
 
     //Test case #14
     test('User can register during Checkout flow and placing an order and delete this account later', async ({ page }) => {

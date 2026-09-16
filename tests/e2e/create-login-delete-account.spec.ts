@@ -11,9 +11,6 @@ import { PaymentPage } from "../../pages/PaymentPage";
 import { AccountApiClient } from '../../api/AccountApiClient';
 
 test.describe('E2E scenarios, combination of API + UI flows', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
 
     //Test case #2
     test('User created via API can login and delete account via UI', async ({ request, page }) => {

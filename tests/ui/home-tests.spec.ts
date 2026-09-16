@@ -7,9 +7,6 @@ import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 
 test.describe('Home page tests', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
 
     //Test case #10
     test('User can subscribe on Home page', async ({ page }) => {

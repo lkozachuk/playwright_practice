@@ -4,10 +4,6 @@ import { ContactUsPage } from "../../pages/ContactUsPage";
 import { testData } from "../../test-data/testData";
 
 test.describe('Contact Us page to leave a feedback', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
-
     //Test case #6
     test('User can submit contact form with file upload', async ({ page }) => {
         const homePage = new HomePage(page);

@@ -8,9 +8,6 @@ import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from "../../utils/random";
 
 test.describe('Product listing and search', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
 
     //Test case #9
     test('User can search a product by name', async ({ page }) => {

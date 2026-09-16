@@ -8,9 +8,6 @@ import { AccountCreatedPage } from "../../pages/AccountCreatedPage";
 import { DeleteAccountPage } from "../../pages/DeleteAccountPage";
 
 test.describe('User login and sign up', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
 
     // Test case #1
     test('User can create a new account and delete it', async ({ page }) => {

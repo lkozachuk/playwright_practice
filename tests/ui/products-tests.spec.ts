@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ProductsPage } from "../../pages/ProductsPage";
+import { ProductsListPage } from "../../pages/ProductsListPage";
 import { HomePage } from "../../pages/HomePage";
 import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
@@ -7,7 +7,7 @@ import { CartPage } from "../../pages/CartPage";
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from "../../utils/random";
 
-test.describe('Product listing and search', () => {
+test.describe('Product listing and search', { tag: '@regression' }, () => {
 
     //Test case #9
     test('User can search a product by name', { tag: '@smoke' }, async ({ page }) => {
@@ -15,14 +15,14 @@ test.describe('Product listing and search', () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
-        await productsPage.searchProduct(testData.search.sleevelessDressProduct);
-        await expect(productsPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
-        await expect(productsPage.productList, 'There should be exactly one product displayed').toHaveCount(1);
-        await expect(productsPage.productNames.first()).toHaveText(
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await productsListPage.searchProduct(testData.search.sleevelessDressProduct);
+        await expect(productsListPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
+        await expect(productsListPage.productList, 'There should be exactly one product displayed').toHaveCount(1);
+        await expect(productsListPage.productNames.first()).toHaveText(
             new RegExp(testData.search.sleevelessDressProduct, "i")
         );
     });
@@ -33,17 +33,17 @@ test.describe('Product listing and search', () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
-        await productsPage.searchProduct("top");
-        await expect(productsPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
-        await expect(productsPage.productNames.first()).toHaveText(/Blue Top/i);
-        await expect(productsPage.productPrices.first()).toHaveText(/Rs. 500/i);
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await productsListPage.searchProduct("top");
+        await expect(productsListPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
+        await expect(productsListPage.productNames.first()).toHaveText(/Blue Top/i);
+        await expect(productsListPage.productPrices.first()).toHaveText(/Rs. 500/i);
 
         // Click on the first product to open its details page
-        await productsPage.viewDetailsProductList.first().click();
+        await productsListPage.viewDetailsProductList.first().click();
 
         const productDetailsPage = new ProductsDetailsPage(page);
         await expect(productDetailsPage.productDetails, 'Product details should be visible').toBeVisible();
@@ -65,22 +65,22 @@ test.describe('Product listing and search', () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
-        await expect(productsPage.getAddToCartButtonById("1"), 'Add to cart button for the first product should be visible').toBeVisible();
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
+        await expect(productsListPage.getAddToCartButtonById("1"), 'Add to cart button for the first product should be visible').toBeVisible();
 
-        const firstProductName = await productsPage.productList
+        const firstProductName = await productsListPage.productList
             .nth(0)
             .locator("p")
             .nth(1)
             .textContent();
-        const firstProduct = productsPage.getProductCardByName(firstProductName || "First product name not found");
+        const firstProduct = productsListPage.getProductCardByName(firstProductName || "First product name not found");
         await expect(firstProduct, 'First product should be visible').toBeVisible();
-        const firstProductPrice = await productsPage.getProductPriceByName(firstProductName || "First product name not found").textContent();
+        const firstProductPrice = await productsListPage.getProductPriceByName(firstProductName || "First product name not found").textContent();
 
-        await productsPage.getAddToCartButtonById("1").click();
+        await productsListPage.getAddToCartButtonById("1").click();
 
         const modal = new AddedToCartModal(page);
         await modal.waitForOpen();
@@ -88,17 +88,17 @@ test.describe('Product listing and search', () => {
         await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
         await modal.clickContinueShopping();
         await expect(modal.modal).toBeHidden();
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
 
-        const secondProductName = await productsPage.productList
+        const secondProductName = await productsListPage.productList
             .nth(1)
             .locator("p")
             .nth(1)
             .textContent();
-        const secondProduct = productsPage.getProductCardByName(secondProductName || "Second product name not found");
+        const secondProduct = productsListPage.getProductCardByName(secondProductName || "Second product name not found");
         await expect(secondProduct, 'Second product should be visible').toBeVisible();
-        const secondProductPrice = await productsPage.getProductPriceByName(secondProductName || "Second product name not found").textContent();
-        await productsPage.getAddToCartButtonById("2").click();
+        const secondProductPrice = await productsListPage.getProductPriceByName(secondProductName || "Second product name not found").textContent();
+        await productsListPage.getAddToCartButtonById("2").click();
 
         await modal.waitForOpen();
         await expect(modal.modalTitle).toHaveText("Added!");
@@ -128,22 +128,22 @@ test.describe('Product listing and search', () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
-        await expect(productsPage.getAddToCartButtonById("2"), 'Add to cart button for the first product should be visible').toBeVisible();
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
+        await expect(productsListPage.getAddToCartButtonById("2"), 'Add to cart button for the first product should be visible').toBeVisible();
 
-        const firstProductName = await productsPage.productList
+        const firstProductName = await productsListPage.productList
             .nth(1)
             .locator("p")
             .nth(1)
             .textContent();
-        const firstProduct = productsPage.getProductCardByName(firstProductName || "First product name not found");
+        const firstProduct = productsListPage.getProductCardByName(firstProductName || "First product name not found");
         await expect(firstProduct, 'First product should be visible').toBeVisible();
-        const firstProductPrice = await productsPage.getProductPriceByName(firstProductName || "First product name not found").textContent();
+        const firstProductPrice = await productsListPage.getProductPriceByName(firstProductName || "First product name not found").textContent();
 
-        await productsPage.getAddToCartButtonById("2").click();
+        await productsListPage.getAddToCartButtonById("2").click();
 
         const modal = new AddedToCartModal(page);
         await modal.waitForOpen();
@@ -151,17 +151,17 @@ test.describe('Product listing and search', () => {
         await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
         await modal.clickContinueShopping();
         await expect(modal.modal).toBeHidden();
-        await expect(productsPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
+        await expect(productsListPage.productList, 'Product list should not be empty after search').not.toHaveCount(0);
 
-        const secondProductName = await productsPage.productList
+        const secondProductName = await productsListPage.productList
             .nth(2)
             .locator("p")
             .nth(1)
             .textContent();
-        const secondProduct = productsPage.getProductCardByName(secondProductName || "Second product name not found");
+        const secondProduct = productsListPage.getProductCardByName(secondProductName || "Second product name not found");
         await expect(secondProduct, 'Second product should be visible').toBeVisible();
-        const secondProductPrice = await productsPage.getProductPriceByName(secondProductName || "Second product name not found").textContent();
-        await productsPage.getAddToCartButtonById("3").click();
+        const secondProductPrice = await productsListPage.getProductPriceByName(secondProductName || "Second product name not found").textContent();
+        await productsListPage.getAddToCartButtonById("3").click();
 
         await modal.waitForOpen();
         await expect(modal.modalTitle).toHaveText("Added!");
@@ -199,20 +199,20 @@ test.describe('Product listing and search', () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         await page.evaluate(() => window.scrollBy(0, 700));
-        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
-        await expect(productsPage.brandsSection, 'User should see brands section').toContainText("Brands");
-        await productsPage.selectBrand("Polo");
-        await productsPage.closeGoogleVignette();
-        await expect(productsPage.productListTitle, 'Product list title should be "Brand - Polo Products"').toHaveText(testData.products.poloProductsTitle);
-        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
-        await productsPage.selectBrand("Madame");
-        await productsPage.closeGoogleVignette();
-        await expect(productsPage.productListTitle, 'Product list title should be "Brand - Madame Products"').toHaveText(testData.products.madameProductsTitle);
-        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
+        await expect(productsListPage.brandsSection, 'User should see brands section').toContainText("Brands");
+        await productsListPage.selectBrand("Polo");
+        await productsListPage.closeGoogleVignette();
+        await expect(productsListPage.productListTitle, 'Product list title should be "Brand - Polo Products"').toHaveText(testData.products.poloProductsTitle);
+        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
+        await productsListPage.selectBrand("Madame");
+        await productsListPage.closeGoogleVignette();
+        await expect(productsListPage.productListTitle, 'Product list title should be "Brand - Madame Products"').toHaveText(testData.products.madameProductsTitle);
+        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
     });
 
     //Test case #21
@@ -222,11 +222,11 @@ test.describe('Product listing and search', () => {
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
         const email = generateRandomEmail();
 
-        const productsPage = new ProductsPage(page);
-        await productsPage.open();
-        await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+        const productsListPage = new ProductsListPage(page);
+        await productsListPage.open();
+        await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         // Click on the first product to open its details page
-        await productsPage.viewDetailsProductList.first().click();
+        await productsListPage.viewDetailsProductList.first().click();
         const productDetailsPage = new ProductsDetailsPage(page);
         await page.evaluate(() => window.scrollBy(0, 500));
         await page.waitForFunction(() => window.scrollY >= 500);

@@ -1,9 +1,26 @@
 {
-  "name": "vscode-practice",
+  "name": "playwright-automation-test-framework",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui-mode": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+
+    "test:ui": "playwright test tests/ui",
+    "test:e2e": "playwright test tests/e2e",
+    
+    "report": "playwright show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

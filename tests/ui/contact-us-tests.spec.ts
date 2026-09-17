@@ -3,7 +3,7 @@ import { HomePage } from "../../pages/HomePage";
 import { ContactUsPage } from "../../pages/ContactUsPage";
 import { testData } from "../../test-data/testData";
 
-test.describe('Contact Us page to leave a feedback', { tag: '@smoke' }, () => {
+test.describe('Contact Us page to leave a feedback', { tag: ['@smoke', '@regression'] }, () => {
     //Test case #6
     test('User can submit contact form with file upload', async ({ page }) => {
         const homePage = new HomePage(page);
@@ -33,7 +33,7 @@ test.describe('Contact Us page to leave a feedback', { tag: '@smoke' }, () => {
         await expect(contactUsPage.emailInput, 'Email input should not be visible').not.toBeVisible();
 
         await contactUsPage.homeButton.click();
-        await contactUsPage.closeAdvertisement();
+        await contactUsPage.closeGoogleVignette();
 
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
     });

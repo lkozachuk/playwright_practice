@@ -33,7 +33,7 @@ test.describe('Contact Us page to leave a feedback', { tag: ['@smoke', '@regress
         await expect(contactUsPage.emailInput, 'Email input should not be visible').not.toBeVisible();
 
         await contactUsPage.homeButton.click();
-        await contactUsPage.closeAdvertisement();
+        await contactUsPage.closeGoogleVignette();
 
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
     });

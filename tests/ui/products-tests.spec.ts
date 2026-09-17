@@ -7,7 +7,7 @@ import { CartPage } from "../../pages/CartPage";
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from "../../utils/random";
 
-test.describe('Product listing and search', () => {
+test.describe('Product listing and search', { tag: '@regression' }, () => {
 
     //Test case #9
     test('User can search a product by name', { tag: '@smoke' }, async ({ page }) => {

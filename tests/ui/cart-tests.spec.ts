@@ -6,7 +6,7 @@ import { CartPage } from "../../pages/CartPage";
 import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 
-test.describe('Cart page tests', { tag: '@smoke' }, () => {
+test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
 
     //Test case #11
     test('User can subscribe on Cart page', async ({ page }) => {
@@ -18,7 +18,7 @@ test.describe('Cart page tests', { tag: '@smoke' }, () => {
 
         const cartPage = new CartPage(page);
         await cartPage.open();
-        await expect(cartPage.cartEmptyInfo, 'Cart page should be empty').toBeVisible
+        await expect(cartPage.cartEmptyInfo, 'Cart page should be empty').toBeVisible();
 
         await expect(cartPage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
         await cartPage.subscriptionInput.fill(email);

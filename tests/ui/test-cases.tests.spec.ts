@@ -3,7 +3,7 @@ import { HomePage } from "../../pages/HomePage";
 import { TestCasesPage } from "../../pages/TestCasesPage";
 import { testData } from "../../test-data/testData";
 
-test.describe('Test cases page', () => {
+test.describe('Test cases page', { tag: '@regression' }, () => {
     //Test case #7
     test('User can navigate to the Test Cases page', async ({ page }) => {
         const homePage = new HomePage(page);

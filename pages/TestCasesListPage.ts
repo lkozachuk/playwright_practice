@@ -1,6 +1,6 @@
 import { type Locator, type Page } from "@playwright/test";
 
-export class TestCasesPage {
+export class TestCasesListPage {
     readonly page: Page;
     readonly title: Locator;
     readonly subTitle: Locator;

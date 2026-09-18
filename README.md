@@ -89,6 +89,13 @@ npm run test:debug        # debug mode
 npm run report            # open last HTML report
 ```
 
+## Playwright MCP (optional, local dev tooling)
+This project includes a `.vscode/mcp.json` config for the Playwright MCP server, enabling AI assistants (e.g. GitHub Copilot Chat) to drive a real browser via natural-language instructions — useful for exploratory testing and locator discovery.
+
+- Config: `.vscode/mcp.json`
+- Runtime artifacts (`.playwright-mcp/`) are git-ignored
+- Not part of the automated test suite or CI pipeline
+
 ## CI/CD
 - **On PR to `main`:** smoke tests (`@smoke`) run on Chromium only, for fast feedback before merge
 - **Nightly (weekdays, 05:00 Kyiv time) and manual trigger:** full regression suite runs across Chromium, Firefox, and WebKit

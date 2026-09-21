@@ -29,8 +29,8 @@ test.describe('Contact Us page to leave a feedback', { tag: ['@smoke', '@regress
         await contactUsPage.submitButton.click();
         await expect(contactUsPage.successMessage, 'Success message should be visible after form submission').toHaveText(testData.messages.contactUsSuccessMsg);
         await expect(contactUsPage.homeButton, 'Home button should be visible after form submission').toBeVisible();
-        await expect(contactUsPage.nameInput, 'Name input should not be visible').not.toBeVisible();
-        await expect(contactUsPage.emailInput, 'Email input should not be visible').not.toBeVisible();
+        await expect(contactUsPage.nameInput, 'Name input should not be visible').toBeHidden();
+        await expect(contactUsPage.emailInput, 'Email input should not be visible').toBeHidden();
 
         await contactUsPage.homeButton.click();
         await contactUsPage.closeGoogleVignette();

@@ -8,25 +8,35 @@
     "test:headed": "playwright test --headed",
     "test:ui-mode": "playwright test --ui",
     "test:debug": "playwright test --debug",
-
     "test:smoke": "playwright test --grep @smoke",
     "test:regression": "playwright test --grep @regression",
-
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
-
     "test:ui": "playwright test tests/ui",
     "test:e2e": "playwright test tests/e2e",
-    
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run typecheck && npm run lint && npm run format:check"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.1.2"
+    "@types/node": "^26.1.2",
+    "dotenv": "^18.0.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.12.0",
+    "prettier": "^3.9.8",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0"
   }
 }

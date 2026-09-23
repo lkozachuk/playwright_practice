@@ -10,10 +10,7 @@ import { ProductsPage } from "../../pages/ProductsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 
-test.describe('User login and sign up', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
+test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () => {
 
     // Test case #1
     test('User can create a new account and delete it', async ({ page }) => {

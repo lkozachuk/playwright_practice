@@ -2,14 +2,11 @@ import { test, expect } from "@playwright/test";
 import { HomePage } from "../../pages/HomePage";
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from '../../utils/random';
-import { ProductsPage } from "../../pages/ProductsPage";
+import { ProductsListPage } from "../../pages/ProductsListPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 
-test.describe('Home page tests', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
+test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
 
     //Test case #10
     test('User can subscribe on Home page', async ({ page }) => {
@@ -39,17 +36,17 @@ test.describe('Home page tests', () => {
         await expect(homePage.womenDressSubcategory, 'User should see Women Dress subcategory').toBeVisible();
         await homePage.womenDressSubcategory.click();
 
-        const productsPage = new ProductsPage(page);
-        await expect(productsPage.productListTitle, 'User should see title of the products list').toBeVisible();
-        await expect(productsPage.productListTitle).toHaveText(testData.products.dressProductTitle);
-        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+        const productsListPage = new ProductsListPage(page);
+        await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
+        await expect(productsListPage.productListTitle).toHaveText(testData.products.dressProductTitle);
+        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
 
-        await productsPage.menCategory.click();
-        await productsPage.closeGoogleVignette();
-        await expect(productsPage.menJeansSubcategory, 'User should see Men Jeans subcategory').toBeVisible();
-        await productsPage.menJeansSubcategory.click();
-        await expect(productsPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
-        await expect(productsPage.productList, 'User should see products list').not.toHaveCount(0);
+        await productsListPage.menCategory.click();
+        await productsListPage.closeGoogleVignette();
+        await expect(productsListPage.menJeansSubcategory, 'User should see Men Jeans subcategory').toBeVisible();
+        await productsListPage.menJeansSubcategory.click();
+        await expect(productsListPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
+        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
     });
 
     //Test case #22

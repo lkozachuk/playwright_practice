@@ -10,13 +10,10 @@ import { CheckoutPage } from "../../pages/CheckoutPage";
 import { PaymentPage } from "../../pages/PaymentPage";
 import { AccountApiClient } from '../../api/AccountApiClient';
 
-test.describe('E2E scenarios, combination of API + UI flows', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
+test.describe('E2E scenarios, combination of API + UI flows', { tag: '@regression' }, () => {
 
     //Test case #2
-    test('User created via API can login and delete account via UI', async ({ request, page }) => {
+    test('User created via API can login and delete account via UI', { tag: '@smoke' }, async ({ request, page }) => {
         const name = 'Test';
         const email = generateRandomEmail();
         const password = testData.signUp.password;
@@ -47,7 +44,7 @@ test.describe('E2E scenarios, combination of API + UI flows', () => {
     });
 
     //Test case #16
-    test('User can login before Checkout flow and place an order -> user created via API and login', async ({ request, page }) => {
+    test('User can login before Checkout flow and place an order -> user created via API and login', { tag: '@smoke' }, async ({ request, page }) => {
         const name = 'Test';
         const email = generateRandomEmail();
         const password = testData.signUp.password;
@@ -216,6 +213,7 @@ test.describe('E2E scenarios, combination of API + UI flows', () => {
         const download = await paymentPage.downloadInvoice();
         expect(download.suggestedFilename()).toBeTruthy();
         await paymentPage.continueBtn.click();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         const deleteAccountPage = new DeleteAccountPage(page);
         await deleteAccountPage.open();

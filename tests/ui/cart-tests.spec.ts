@@ -6,10 +6,7 @@ import { CartPage } from "../../pages/CartPage";
 import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 
-test.describe('Cart page tests', () => {
-    test.use({
-        baseURL: 'https://automationexercise.com/',
-    });
+test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
 
     //Test case #11
     test('User can subscribe on Cart page', async ({ page }) => {
@@ -21,7 +18,7 @@ test.describe('Cart page tests', () => {
 
         const cartPage = new CartPage(page);
         await cartPage.open();
-        await expect(cartPage.cartEmptyInfo, 'Cart page should be empty').toBeVisible
+        await expect(cartPage.cartEmptyInfo, 'Cart page should be empty').toBeVisible();
 
         await expect(cartPage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
         await cartPage.subscriptionInput.fill(email);
@@ -50,7 +47,7 @@ test.describe('Cart page tests', () => {
 
         // Click on the first product to open its details page
         await homePage.viewDetailsProductList.nth(randomIndex).click();
-        if(randomIndex > 12){
+        if (randomIndex > 12) {
             await page.evaluate(() => window.scrollBy(0, 1500));
         }
 

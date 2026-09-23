@@ -6,7 +6,7 @@ import { generateRandomEmail } from '../../utils/random';
 import { SignUpPage } from "../../pages/SignUpPage";
 import { AccountCreatedPage } from "../../pages/AccountCreatedPage";
 import { DeleteAccountPage } from "../../pages/DeleteAccountPage";
-import { ProductsPage } from "../../pages/ProductsPage";
+import { ProductsListPage } from "../../pages/ProductsListPage";
 import { AddedToCartModal } from "../../components/AddedToCartModal";
 import { CartPage } from "../../pages/CartPage";
 
@@ -46,7 +46,7 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         await expect(deleteAccountPage.title, 'Delete Account page title should be visible').toBeVisible();
         await expect(deleteAccountPage.title, 'Delete Account page should have title').toHaveText(testData.accountDeleted.title);
         await deleteAccountPage.continueBtn.click();
-        await homePage.closeAdvertisement();
+        await homePage.closeGoogleVignette();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
     });
 
@@ -117,7 +117,7 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsPage(page);
+        const productsPage = new ProductsListPage(page);
         await productsPage.open();
         await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
         await productsPage.searchProduct(testData.search.sleevelessDressProduct);

@@ -11,70 +11,141 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
     //Test case #10
     test('User can subscribe on Home page', async ({ page }) => {
         const email = generateRandomEmail();
-
         const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
-        await page.keyboard.press('End');
 
-        await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
-        await homePage.subscriptionInput.fill(email);
-        await homePage.subscriptionBtn.click();
-        await expect(homePage.subscribeSuccessMsg, 'Success message should appear after subscribing').toBeVisible();
-        await expect(homePage.subscribeSuccessMsg).toHaveText(testData.messages.subscribedSuccessMsg);
+        await test.step('Scroll to the bottom of the page and subscribe', async () => {
+            await page.keyboard.press('End');
+            await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
+            await homePage.subscriptionInput.fill(email);
+            await homePage.subscriptionBtn.click();
+            await expect(homePage.subscribeSuccessMsg, 'Success message should appear after subscribing').toBeVisible();
+            await expect(homePage.subscribeSuccessMsg).toHaveText(testData.messages.subscribedSuccessMsg);
+        });
     });
 
     //Test case #18
     test('User can see category products on Home page', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
-        await page.evaluate(() => window.scrollBy(0, 600));
-        await expect(homePage.leftSidebar, 'User should see left sidebar on the Home page').toBeVisible();
-        await expect(homePage.categoryProductsList, 'User should see category products list on the left sidebar').toBeVisible();
-        await homePage.womenCategory.click();
-        await homePage.closeGoogleVignette();
-        await expect(homePage.womenDressSubcategory, 'User should see Women Dress subcategory').toBeVisible();
-        await homePage.womenDressSubcategory.click();
-
+        await test.step('Scroll page to the sidebar, click on women category and select Dress subcategory', async () => {
+            await page.evaluate(() => window.scrollBy(0, 600));
+            await expect(homePage.leftSidebar, 'User should see left sidebar on the Home page').toBeVisible();
+            await expect(homePage.categoryProductsList, 'User should see category products list on the left sidebar').toBeVisible();
+            await homePage.womenCategory.click();
+            await homePage.closeGoogleVignette();
+            await expect(homePage.womenDressSubcategory, 'User should see Women Dress subcategory').toBeVisible();
+            await homePage.womenDressSubcategory.click();
+        });
         const productsListPage = new ProductsListPage(page);
-        await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
-        await expect(productsListPage.productListTitle).toHaveText(testData.products.dressProductTitle);
-        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
-
-        await productsListPage.menCategory.click();
-        await productsListPage.closeGoogleVignette();
-        await expect(productsListPage.menJeansSubcategory, 'User should see Men Jeans subcategory').toBeVisible();
-        await productsListPage.menJeansSubcategory.click();
-        await expect(productsListPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
-        await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
+        await test.step('Verify women dress products are displayed on Products List page', async () => {
+            await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
+            await expect(productsListPage.productListTitle).toHaveText(testData.products.dressProductTitle);
+            await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
+        });
+        await test.step('Click on men category and select Jeans subcategory', async () => {
+            await productsListPage.menCategory.click();
+            await productsListPage.closeGoogleVignette();
+            await expect(productsListPage.menJeansSubcategory, 'User should see Men Jeans subcategory').toBeVisible();
+            await productsListPage.closeGoogleVignette(); 
+            await productsListPage.menJeansSubcategory.click();
+            await productsListPage.closeGoogleVignette(); 
+        });
+        await test.step('Verify men jeans products are displayed on Products List page', async () => {
+            await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
+            await expect(productsListPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
+            await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
+        });
     });
 
     //Test case #22
     test('User can add product from Recommended items section to Cart', async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.open();
-        await homePage.recommendedItems.scrollIntoViewIfNeeded();
-        await expect(homePage.recommendedItems, 'Section should have title "Recommended Items"').toContainText('recommended items');
-        const recommendedItemName = await homePage.productNameInRecommendedItems.first().textContent();
-        const recommendedItemPrice = await homePage.productPriceInRecommendedItems.first().textContent();
-        await homePage.addtoCartVisibleRecommendedItem();
+        let recommendedItemName: string | null;
+        let recommendedItemPrice: string | null;
+        await test.step('Scroll to the Recommended items section and add a product to the cart', async () => {
+            await homePage.recommendedItems.scrollIntoViewIfNeeded();
+            await expect(homePage.recommendedItems, 'Section should have title "Recommended Items"').toContainText('recommended items');
+            recommendedItemName = await homePage.productNameInRecommendedItems.first().textContent();
+            recommendedItemPrice = await homePage.productPriceInRecommendedItems.first().textContent();
+            await homePage.addToCartRecommendedItemByName(recommendedItemName || "Recommended item name not found");
+        });
+        await test.step('Verify added to cart modal and navigate to the Cart page', async () => {
+            const modal = new AddedToCartModal(page);
+            await modal.waitForOpen();
+            await expect(modal.modalTitle).toHaveText("Added!");
+            await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+            await modal.clickViewCart();
+        });
+        await test.step('Verify product details in the Cart page', async () => {
+            const cartPage = new CartPage(page);
+            await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
+            await expect(cartPage.cartTableRows, 'There should be exactly one product in the cart').toHaveCount(1);
+            await expect(cartPage.cartTableRowProductNames.nth(0), 'Product name in cart should match the first added product').toContainText(recommendedItemName || "Recommended item name not found");
 
-        const modal = new AddedToCartModal(page);
-        await modal.waitForOpen();
-        await expect(modal.modalTitle).toHaveText("Added!");
-        await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
-        await modal.clickViewCart();
-
-        const cartPage = new CartPage(page);
-        await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
-        await expect(cartPage.cartTableRows, 'There should be exactly two products in the cart').toHaveCount(1);
-        console.log("Product name: ", await cartPage.cartTableRowProductNames.nth(0).textContent());
-        await expect(cartPage.cartTableRowProductNames.nth(0), 'First product name in cart should match the first added product').toContainText(recommendedItemName || "Recommended item name not found");
-
-        await expect(cartPage.cartTableRowProductPrices.nth(0), 'Product price on Cart page should be the same as on the products page').toContainText(recommendedItemPrice || "Recommended item price not found");
-        await expect(cartPage.cartTableRowProductQuantities.nth(0), 'First product quantity in cart should be 1').toHaveText("1");
-        await expect(cartPage.cartTableRowProductTotalPrices.nth(0), 'Product total price should be correct').toContainText(recommendedItemPrice || "Recommended item price not found");
-
+            await expect(cartPage.cartTableRowProductPrices.nth(0), 'Product price on Cart page should be the same as on the products page').toContainText(recommendedItemPrice || "Recommended item price not found");
+            await expect(cartPage.cartTableRowProductQuantities.nth(0), 'Product quantity in cart should be 1').toHaveText("1");
+            await expect(cartPage.cartTableRowProductTotalPrices.nth(0), 'Product total price should be correct').toContainText(recommendedItemPrice || "Recommended item price not found");
+        });
     });
 
+    //Test case #25
+    test('User can scroll up using "Arrow" button', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        await test.step('Scroll to the bottom of the page', async () => {
+            await expect(homePage.subscriptionFieldName.scrollIntoViewIfNeeded());
+            await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
+            await expect(homePage.scrollUpButton, 'Scroll Up button should be visible after scrolling down').toBeVisible();
+            await homePage.closeGoogleVignette();
+            const scrollYBottom = await page.evaluate(() => window.scrollY);
+            expect(scrollYBottom, 'Page should be scrolled down after pressing End').toBeGreaterThan(0);
+        });
+        await test.step('Click Scroll Up button and verify page returns to top', async () => {
+            await homePage.closeGoogleVignette();
+            await homePage.scrollUpButton.click();
+            await homePage.closeGoogleVignette();
+            let scrollY = await page.evaluate(() => window.scrollY);
+            if (scrollY > 0) {
+                await homePage.closeGoogleVignette();
+                await homePage.scrollUpButton.click();
+                await homePage.closeGoogleVignette();
+            }
+            await expect(homePage.logo, 'Logo should be visible after clicking Scroll Up button').toBeVisible();
+            await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
+            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').not.toBeVisible();
+
+            scrollY = await page.evaluate(() => window.scrollY);
+            expect(scrollY, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
+        });
+    });
+
+    //Test case #26
+    test('User can scroll up without using "Arrow" button', async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        await test.step('Scroll to the bottom of the page', async () => {
+            await page.keyboard.press('End');
+            await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
+            await expect(homePage.subscriptionBtn, 'User should see Subscription button').toBeVisible();
+            await homePage.closeGoogleVignette();
+            const scrollYBottom = await page.evaluate(() => window.scrollY);
+            expect(scrollYBottom, 'Page should be scrolled down after pressing End').toBeGreaterThan(0);
+        });
+        await test.step('Scroll back to the top of the page', async () => {
+            await page.keyboard.press('Home');
+            await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
+            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').not.toBeVisible();
+            const scrollUpYAfterClick = await page.evaluate(() => window.scrollY);
+            expect(scrollUpYAfterClick, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
+        });
+    });
 });
+
+

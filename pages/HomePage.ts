@@ -11,9 +11,10 @@ export class HomePage extends BasePage {
     readonly womenDressSubcategory: Locator;
     readonly recommendedItems: Locator;
     readonly activeRecommendedItem: Locator;
-    readonly addToCartButtonInRecommendedItems: Locator;
     readonly productPriceInRecommendedItems: Locator;
     readonly productNameInRecommendedItems: Locator;
+    readonly scrollUpButton: Locator;
+    readonly logo: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -26,9 +27,10 @@ export class HomePage extends BasePage {
         this.womenDressSubcategory = page.locator('#Women').getByRole('link', { name: 'Dress' });
         this.recommendedItems = page.locator('.recommended_items');
         this.activeRecommendedItem = this.recommendedItems.locator('.item.active');
-        this.addToCartButtonInRecommendedItems = this.activeRecommendedItem.locator('.add-to-cart');
         this.productPriceInRecommendedItems = this.activeRecommendedItem.locator('h2');
         this.productNameInRecommendedItems = this.activeRecommendedItem.locator('p');
+        this.scrollUpButton = page.locator('#scrollUp');
+        this.logo = page.getByRole('link', { name: 'Website for automation practice' });
     }
 
     async open() {
@@ -55,7 +57,8 @@ export class HomePage extends BasePage {
         return this.page.locator(`[data-product-id="${productId}"]`).first();
     }
 
-    async addtoCartVisibleRecommendedItem() {
-        await this.addToCartButtonInRecommendedItems.first().click();
+    async addToCartRecommendedItemByName(productName: string) {
+        const card = this.recommendedItems.locator('.item', { hasText: productName });
+        await card.first().locator('.add-to-cart').first().click();
     }
 }

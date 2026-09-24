@@ -10,12 +10,13 @@ test.describe('Test cases page', { tag: '@regression' }, () => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const testCasesListPage = new TestCasesListPage(page);
-        await testCasesListPage.open();
-        await expect(testCasesListPage.title, 'Test Cases Page title should be visible').toBeVisible();
-        await expect(testCasesListPage.subTitle, "Page subtitle should be highlighted in red").toHaveCSS("color", "rgb(255, 0, 0)")
-        await expect(testCasesListPage.subTitle, "Test cases sub title should be equal to the expected text").toHaveText(testData.subTitles.testCasesSubTitle);
+        await test.step('Click on the Test Cases category and verify navigation to the Test Cases page', async () => {
+            const testCasesListPage = new TestCasesListPage(page);
+            await testCasesListPage.open();
+            await expect(testCasesListPage.title, 'Test Cases Page title should be visible').toBeVisible();
+            await expect(testCasesListPage.subTitle, "Page subtitle should be highlighted in red").toHaveCSS("color", "rgb(255, 0, 0)")
+            await expect(testCasesListPage.subTitle, "Test cases sub title should be equal to the expected text").toHaveText(testData.subTitles.testCasesSubTitle);
+        });
     });
-
 
 });

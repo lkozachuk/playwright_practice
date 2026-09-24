@@ -47,4 +47,14 @@ export class BasePage {
         }
     }
 
+    async getOwnText(locator: Locator): Promise<string> {
+    return locator.evaluate((el) => {
+        return Array.from(el.childNodes)
+            .filter((node) => node.nodeType === Node.TEXT_NODE)
+            .map((node) => node.textContent)
+            .join('')
+            .trim();
+    });
+}
+
 }

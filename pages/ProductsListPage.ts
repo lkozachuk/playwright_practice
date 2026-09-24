@@ -23,7 +23,7 @@ export class ProductsListPage extends BasePage {
         this.productPrices = this.productList.locator(".productinfo h2");
         this.viewDetailsProductList = this.productList.locator(".choose a");
         this.menCategory = page.locator('a[href="#Men"]');
-        this.menJeansSubcategory = page.getByRole('link', { name: 'Jeans' });
+        this.menJeansSubcategory = page.locator('#Men').getByRole('link', { name: 'Jeans', exact: true });
         this.brandsSection = page.locator('.brands_products');
     }
 

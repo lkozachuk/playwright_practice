@@ -1,4 +1,7 @@
 name: Playwright Tests
+env:
+  BASE_URL: https://automationexercise.com
+
 on:
   push:
     branches: [ main ]
@@ -8,6 +11,7 @@ on:
     - cron: "0 5 * * 1-5"
       timezone: "Europe/Kyiv"
   workflow_dispatch: # let to trigger it manually from the Actions tab
+
 jobs:
   
   smoke:

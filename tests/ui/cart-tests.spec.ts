@@ -1,23 +1,18 @@
-import { test, expect } from "@playwright/test";
-import { HomePage } from "../../pages/HomePage";
+import { test, expect } from '../../fixtures/pages.fixture';
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from '../../utils/random';
-import { CartPage } from "../../pages/CartPage";
-import { ProductsDetailsPage } from "../../pages/ProductDetailsPage";
-import { AddedToCartModal } from "../../components/AddedToCartModal";
+
 
 test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
 
     //Test case #11
-    test('User can subscribe on Cart page', async ({ page }) => {
+    test('User can subscribe on Cart page', async ({ homePage, cartPage }) => {
         const email = generateRandomEmail();
 
-        const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         await test.step('navigate to the Cart page and subscribe', async () => {
-            const cartPage = new CartPage(page);
             await cartPage.open();
             await expect(cartPage.cartEmptyInfo, 'Cart page should be empty').toBeVisible();
             await expect(cartPage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
@@ -29,8 +24,7 @@ test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
     });
 
     //Test case #13
-    test('User can verify product quantity on the Cart page', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can verify product quantity on the Cart page', async ({ page, homePage, productDetailsPage, addedToCartModal, cartPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
         await page.evaluate(() => window.scrollBy(0, 500));
@@ -48,8 +42,6 @@ test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
             productPrice = await homePage.getOwnText(homePage.getProductPriceByName(productName || "First product name not found"));
             await expect(productPrice, 'Product price should not be empty').toBeTruthy();
         });
-
-        const productDetailsPage = new ProductsDetailsPage(page);
 
         await test.step('Open the selected product details page', async () => {
             await homePage.viewDetailsProductList.nth(randomIndex).click();
@@ -70,15 +62,13 @@ test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
         });
 
         await test.step('Verify added to cart modal and navigate to Cart page', async () => {
-            const modal = new AddedToCartModal(page);
-            await modal.waitForOpen();
-            await expect(modal.modalTitle).toHaveText("Added!");
-            await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
-            await modal.clickViewCart();
+            await addedToCartModal.waitForOpen();
+            await expect(addedToCartModal.modalTitle).toHaveText("Added!");
+            await expect(addedToCartModal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+            await addedToCartModal.clickViewCart();
         });
 
         await test.step('Verify product name, price, quantity and total price on the Cart page', async () => {
-            const cartPage = new CartPage(page);
             if (!productPrice) {
                 throw new Error("Product price text content is null");
             }

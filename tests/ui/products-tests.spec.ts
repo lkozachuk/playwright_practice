@@ -267,3 +267,19 @@ test.describe('Product listing and search', { tag: '@regression' }, () => {
     });
 
 });
+
+
+test.describe('Negative scenarios - Product search', { tag: '@regression' }, () => {
+
+    test('Searching for a nonexistent product shows no results', async ({ productsListPage }) => {
+        await test.step('Search for a product that does not exist', async () => {
+            await productsListPage.open();
+            await productsListPage.searchProduct('randomproduct123');
+        });
+
+        await test.step('Verify no products are shown', async () => {
+            await expect(productsListPage.productList, 'Product list should have zero products for nonexistent search').toHaveCount(0);
+        });
+    });
+
+});

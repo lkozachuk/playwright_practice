@@ -83,6 +83,29 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
     });
 
+    //Extends test case #3 - empty fields, not covered by the credential-mismatch cases
+    test("User can't log in with empty email and password", async ({ homePage, loginPage }) => {
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        await loginPage.open();
+        await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
+
+        await test.step('Submit login form with empty email and password', async () => {
+            await loginPage.login('', '');
+        });
+
+        await test.step('Verify browser blocks submission via native email validation', async () => {
+            const isValid = await loginPage.signUpEmailInput.evaluate(
+                (el: HTMLInputElement) => el.validity.valid
+            );
+            expect(isValid, 'Email field should be flagged as empty by the browser').toBe(false);
+
+            // Also confirms the form never actually submitted
+            await expect(loginPage.loginToAccountTitle, 'Should remain on login form, not proceed to account info').toBeVisible();
+        });
+    });
+
     //Test case #4
     test("User can logout from account", async ({ homePage, loginPage }) => {
         await homePage.open();
@@ -164,3 +187,34 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
     });
 });
+
+test.describe('Negative scenarios - Sign up', { tag: '@regression' }, () => {
+
+    test("User can't sign up with invalid email format", async ({ homePage, loginPage }) => {
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        await loginPage.open();
+
+        await test.step('Attempt sign up with malformed email', async () => {
+            await loginPage.usernameInput.fill('Test');
+            await loginPage.signUpEmailInput.fill('not-an-email-format');
+            await loginPage.signUpButton.click();
+        });
+
+        await test.step('Verify browser blocks submission via native email validation', async () => {
+            const isValid = await loginPage.signUpEmailInput.evaluate(
+                (el: HTMLInputElement) => el.validity.valid
+            );
+            expect(isValid, 'Email field should be flagged as invalid by the browser').toBe(false);
+
+            // Also confirms the form never actually submitted
+            await expect(loginPage.newUserSignUpTitle, 'Should remain on sign up form, not proceed to account info').toBeVisible();
+        });
+    });
+
+});
+
+
+
+

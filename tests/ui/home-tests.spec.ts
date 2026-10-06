@@ -1,17 +1,12 @@
-import { test, expect } from "@playwright/test";
-import { HomePage } from "../../pages/HomePage";
+import { test, expect } from '../../fixtures/pages.fixture';
 import { testData } from "../../test-data/testData";
 import { generateRandomEmail } from '../../utils/random';
-import { ProductsListPage } from "../../pages/ProductsListPage";
-import { AddedToCartModal } from "../../components/AddedToCartModal";
-import { CartPage } from "../../pages/CartPage";
 
 test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
 
     //Test case #10
-    test('User can subscribe on Home page', async ({ page }) => {
+    test('User can subscribe on Home page', async ({ page, homePage }) => {
         const email = generateRandomEmail();
-        const homePage = new HomePage(page);
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
@@ -26,9 +21,9 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
     });
 
     //Test case #18
-    test('User can see category products on Home page', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can see category products on Home page', async ({ page, homePage, productsListPage }) => {
         await homePage.open();
+
         await test.step('Scroll page to the sidebar, click on women category and select Dress subcategory', async () => {
             await page.evaluate(() => window.scrollBy(0, 600));
             await expect(homePage.leftSidebar, 'User should see left sidebar on the Home page').toBeVisible();
@@ -38,20 +33,22 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
             await expect(homePage.womenDressSubcategory, 'User should see Women Dress subcategory').toBeVisible();
             await homePage.womenDressSubcategory.click();
         });
-        const productsListPage = new ProductsListPage(page);
+
         await test.step('Verify women dress products are displayed on Products List page', async () => {
             await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
             await expect(productsListPage.productListTitle).toHaveText(testData.products.dressProductTitle);
             await expect(productsListPage.productList, 'User should see products list').not.toHaveCount(0);
         });
+
         await test.step('Click on men category and select Jeans subcategory', async () => {
             await productsListPage.menCategory.click();
             await productsListPage.closeGoogleVignette();
             await expect(productsListPage.menJeansSubcategory, 'User should see Men Jeans subcategory').toBeVisible();
-            await productsListPage.closeGoogleVignette(); 
+            await productsListPage.closeGoogleVignette();
             await productsListPage.menJeansSubcategory.click();
-            await productsListPage.closeGoogleVignette(); 
+            await productsListPage.closeGoogleVignette();
         });
+
         await test.step('Verify men jeans products are displayed on Products List page', async () => {
             await expect(productsListPage.productListTitle, 'User should see title of the products list').toBeVisible();
             await expect(productsListPage.productListTitle).toHaveText(testData.products.jeansProductTitle);
@@ -60,8 +57,7 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
     });
 
     //Test case #22
-    test('User can add product from Recommended items section to Cart', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can add product from Recommended items section to Cart', async ({ page, homePage, addedToCartModal, cartPage }) => {
         await homePage.open();
         let recommendedItemName: string | null;
         let recommendedItemPrice: string | null;
@@ -73,14 +69,12 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
             await homePage.addToCartRecommendedItemByName(recommendedItemName || "Recommended item name not found");
         });
         await test.step('Verify added to cart modal and navigate to the Cart page', async () => {
-            const modal = new AddedToCartModal(page);
-            await modal.waitForOpen();
-            await expect(modal.modalTitle).toHaveText("Added!");
-            await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
-            await modal.clickViewCart();
+            await addedToCartModal.waitForOpen();
+            await expect(addedToCartModal.modalTitle).toHaveText("Added!");
+            await expect(addedToCartModal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+            await addedToCartModal.clickViewCart();
         });
         await test.step('Verify product details in the Cart page', async () => {
-            const cartPage = new CartPage(page);
             await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
             await expect(cartPage.cartTableRows, 'There should be exactly one product in the cart').toHaveCount(1);
             await expect(cartPage.cartTableRowProductNames.nth(0), 'Product name in cart should match the first added product').toContainText(recommendedItemName || "Recommended item name not found");
@@ -92,13 +86,12 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
     });
 
     //Test case #25
-    test('User can scroll up using "Arrow" button', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can scroll up using "Arrow" button', async ({ page, homePage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         await test.step('Scroll to the bottom of the page', async () => {
-            await expect(homePage.subscriptionFieldName.scrollIntoViewIfNeeded());
+            await homePage.subscriptionFieldName.scrollIntoViewIfNeeded();
             await expect(homePage.subscriptionFieldName, 'User should see Subscription label').toBeVisible();
             await expect(homePage.scrollUpButton, 'Scroll Up button should be visible after scrolling down').toBeVisible();
             await homePage.closeGoogleVignette();
@@ -117,7 +110,7 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
             }
             await expect(homePage.logo, 'Logo should be visible after clicking Scroll Up button').toBeVisible();
             await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
-            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').not.toBeVisible();
+            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').toBeHidden();
 
             scrollY = await page.evaluate(() => window.scrollY);
             expect(scrollY, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
@@ -125,8 +118,7 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
     });
 
     //Test case #26
-    test('User can scroll up without using "Arrow" button', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can scroll up without using "Arrow" button', async ({ page, homePage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
@@ -141,7 +133,7 @@ test.describe('Home page tests', { tag: ['@smoke', '@regression'] }, () => {
         await test.step('Scroll back to the top of the page', async () => {
             await page.keyboard.press('Home');
             await expect(homePage.slider, 'Slider should be visible after clicking Scroll Up button').toBeVisible();
-            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').not.toBeVisible();
+            await expect(homePage.scrollUpButton, 'Scroll Up button should be hidden after scrolling to the top').toBeHidden();
             const scrollUpYAfterClick = await page.evaluate(() => window.scrollY);
             expect(scrollUpYAfterClick, 'Page should be scrolled back to top after clicking Scroll Up').toBe(0);
         });

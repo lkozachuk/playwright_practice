@@ -53,9 +53,29 @@ are automated, organized below by journey.
 - [Test Case 6: Contact Us Form](https://automationexercise.com/test_cases#collapse6)
 - [Test Case 7: Verify Test Cases Page](https://automationexercise.com/test_cases#collapse7)
 
+## Additional negative scenarios
+Beyond the 26 official test cases, the following negative scenarios were added
+to strengthen coverage around form validation and error handling. These are not
+part of the official AutomationExercise test case list, so they have no
+corresponding test case number.
+
+### Account management
+- User can't log in with empty email and password
+- User can't sign up with invalid email format
+
+### Product browsing & search
+- Searching for a nonexistent product shows no results
+
+### Checkout & orders
+- User cannot submit payment with empty required fields
+
+### Contact & static pages
+- Contact Us form cannot be submitted with empty required fields
+
 ## Project structure
  - `pages/` — Page Object classes (BasePage, CartPage, CheckoutPage, HomePage, LoginPage, PaymentPage, ProductsListPage, ProductDetailsPage, ContactUsPage, DeleteAccountPage, SignUpPage, AccountCreatedPage, TestCasesListPage)
  - `components/` — reusable UI components (AddedToCartModal, CheckoutRegisterLoginModal)
+ - `fixtures/` — custom Playwright fixtures; injects page objects, components, and API clients into tests, removing manual instantiation
  - `tests/ui/` — UI-only test specs
  - `tests/e2e/` — combined API + UI test specs
  - `test-data/` — credentials and test inputs
@@ -109,6 +129,10 @@ Chromium, Firefox, WebKit
 - No hard waits (`waitForTimeout`) are used
 - Tests use semantic locators (`getByRole`, `getByTestId`, `getByPlaceholder`)
 - Test data is stored separately from test logic
+
+## Design decisions
+- **No `storageState` / pre-authenticated sessions.** Playwright supports reusing a logged-in session via `storageState` to skip repeating login steps across tests. This framework intentionally does not use it: most covered test cases are full user journeys (registration, login, search, cart, checkout) where the login step itself is part of what's being verified, not incidental setup. Bypassing it with a stored session would mean these flows no longer reflect real user behavior end-to-end. This is a deliberate tradeoff — tests run slower and create more accounts via the API than a session-reuse approach would — but each test more accurately simulates what a real user experiences. If future test cases need to verify behavior unrelated to login itself (e.g. account settings, order history), `storageState` may be reconsidered for that specific subset — but the current suite's journeys are chosen specifically because login is part of the scenario.
+
 
 ## Known limitations
 - It does not cover all possible edge cases beyond the official test case list

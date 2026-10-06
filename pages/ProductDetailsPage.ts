@@ -1,7 +1,7 @@
 import { type Locator, type Page } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
-export class ProductsDetailsPage extends BasePage{
+export class ProductDetailsPage extends BasePage{
     readonly productDetails: Locator;
     readonly productName: Locator;
     readonly productCategory: Locator;

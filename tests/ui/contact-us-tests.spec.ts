@@ -1,17 +1,13 @@
-import { test, expect } from "@playwright/test";
-import { HomePage } from "../../pages/HomePage";
-import { ContactUsPage } from "../../pages/ContactUsPage";
+import { test, expect } from '../../fixtures/pages.fixture';
 import { testData } from "../../test-data/testData";
 
 test.describe('Contact Us page to leave a feedback', { tag: ['@smoke', '@regression'] }, () => {
     //Test case #6
-    test('User can submit contact form with file upload', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can submit contact form with file upload', async ({ page, homePage, contactUsPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         // Navigate to the Contact Us page
-        const contactUsPage = new ContactUsPage(page);
 
         await test.step('Open Contact Us page', async () => {
             await contactUsPage.open();
@@ -43,6 +39,22 @@ test.describe('Contact Us page to leave a feedback', { tag: ['@smoke', '@regress
             await contactUsPage.homeButton.click();
             await contactUsPage.closeGoogleVignette();
             await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+        });
+    });
+
+});
+
+test.describe('Negative scenarios - Contact Us', { tag: '@regression' }, () => {
+
+    test('Contact Us form cannot be submitted with empty required fields', async ({ contactUsPage }) => {
+        await contactUsPage.open();
+
+        await test.step('Submit form without filling any fields', async () => {
+            await contactUsPage.submitButton.click();
+        });
+
+        await test.step('Verify success message is not shown', async () => {
+            await expect(contactUsPage.successMessage, 'Success message should NOT appear for empty submission').not.toBeVisible();
         });
     });
 

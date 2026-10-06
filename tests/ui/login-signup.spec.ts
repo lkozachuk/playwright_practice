@@ -1,24 +1,16 @@
-import { test, expect } from "@playwright/test";
-import { HomePage } from "../../pages/HomePage";
+import { test, expect } from '../../fixtures/pages.fixture';
 import { testData } from "../../test-data/testData";
-import { LoginPage } from "../../pages/LoginPage";
 import { generateRandomEmail } from '../../utils/random';
-import { SignUpPage } from "../../pages/SignUpPage";
-import { AccountCreatedPage } from "../../pages/AccountCreatedPage";
-import { DeleteAccountPage } from "../../pages/DeleteAccountPage";
-import { ProductsListPage } from "../../pages/ProductsListPage";
-import { AddedToCartModal } from "../../components/AddedToCartModal";
-import { CartPage } from "../../pages/CartPage";
+
 
 test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () => {
 
     // Test case #1
-    test('User can create a new account and delete it', async ({ page }) => {
-        const homePage = new HomePage(page);
+    test('User can create a new account and delete it', async ({ homePage, loginPage, signUpPage, accountCreatedPage,
+        deleteAccountPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const loginPage = new LoginPage(page);
         const name = "Test";
         const email = generateRandomEmail();
 
@@ -28,8 +20,6 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
             await expect(loginPage.usernameInput, 'User name input field should be visible').toBeVisible();
             await loginPage.signUp(name, email);
         });
-
-        const signUpPage = new SignUpPage(page);
 
         await test.step('Fill in account information on Sign Up page', async () => {
             await expect(signUpPage.pageTitle, 'Sign Up page title should be visible').toHaveText(testData.signUp.signUpPageTitle);
@@ -44,7 +34,6 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
 
         await test.step('Verify account created and user is logged in', async () => {
-            const accountCreatedPage = new AccountCreatedPage(page);
             await expect(accountCreatedPage.pageTitle, 'Account Created Page should have title').toHaveText(testData.accountCreated.title);
             await accountCreatedPage.continueBtn.click();
             await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -52,7 +41,6 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
 
         await test.step('Delete account and verify deletion', async () => {
-            const deleteAccountPage = new DeleteAccountPage(page);
             await deleteAccountPage.open();
             await expect(deleteAccountPage.title, 'Delete Account page title should be visible').toBeVisible();
             await expect(deleteAccountPage.title, 'Delete Account page should have title').toHaveText(testData.accountDeleted.title);
@@ -63,12 +51,10 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
     });
 
     // Test case #3
-    test("User can't login with incorrect email or password", async ({ page }) => {
-        const homePage = new HomePage(page);
+    test("User can't login with incorrect email or password", async ({ homePage, loginPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const loginPage = new LoginPage(page);
         await loginPage.open();
         await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
 
@@ -89,6 +75,7 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
             await expect(loginPage.errorLoginMsg, "Error message should be visible").toBeVisible();
             await expect(loginPage.errorLoginMsg, "Error message should be highlighted in red").toHaveCSS("color", "rgb(255, 0, 0)")
         });
+
         await test.step('Verify successful login with correct credentials', async () => {
             await loginPage.login(testData.login.validUser.email, testData.login.validUser.password);
             await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
@@ -96,13 +83,34 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
     });
 
-    //Test case #4
-    test("User can logout from account", async ({ page }) => {
-        const homePage = new HomePage(page);
+    //Extends test case #3 - empty fields, not covered by the credential-mismatch cases
+    test("User can't log in with empty email and password", async ({ homePage, loginPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const loginPage = new LoginPage(page);
+        await loginPage.open();
+        await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
+
+        await test.step('Submit login form with empty email and password', async () => {
+            await loginPage.login('', '');
+        });
+
+        await test.step('Verify browser blocks submission via native email validation', async () => {
+            const isValid = await loginPage.signUpEmailInput.evaluate(
+                (el: HTMLInputElement) => el.validity.valid
+            );
+            expect(isValid, 'Email field should be flagged as empty by the browser').toBe(false);
+
+            // Also confirms the form never actually submitted
+            await expect(loginPage.loginToAccountTitle, 'Should remain on login form, not proceed to account info').toBeVisible();
+        });
+    });
+
+    //Test case #4
+    test("User can logout from account", async ({ homePage, loginPage }) => {
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
         await loginPage.open();
         await expect(loginPage.loginToAccountTitle, 'Login to your account title should be visible').toHaveText(testData.login.loginTitle);
 
@@ -117,12 +125,10 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
     });
 
     //Test case #5
-    test("User can't create a new account with already registered email", async ({ page }) => {
-        const homePage = new HomePage(page);
+    test("User can't create a new account with already registered email", async ({ homePage, loginPage }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const loginPage = new LoginPage(page);
         await loginPage.open();
         await expect(loginPage.newUserSignUpTitle, 'New User Signup title should be visible').toHaveText(testData.login.signUpTitle);
         await expect(loginPage.usernameInput, 'User name input field should be visible').toBeVisible();
@@ -136,33 +142,27 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
     });
 
     //Test case #20
-    test("User can see added product in the cart after log in to account", async ({ page }) => {
-        const homePage = new HomePage(page);
+    test("User can see added product in the cart after log in to account", async ({ homePage, loginPage, cartPage, productsListPage, addedToCartModal }) => {
         await homePage.open();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
-        const productsPage = new ProductsListPage(page);
-        const modal = new AddedToCartModal(page);
-        const cartPage = new CartPage(page);
-        const loginPage = new LoginPage(page);
-
         await test.step('Search for a product and add it to the cart', async () => {
-            await productsPage.open();
-            await expect(productsPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
-            await productsPage.searchProduct(testData.search.sleevelessDressProduct);
-            await expect(productsPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
-            await expect(productsPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
-            await expect(productsPage.productList, 'There should be exactly one product displayed').toHaveCount(1);
-            await expect(productsPage.productNames.first()).toHaveText(new RegExp(testData.search.sleevelessDressProduct, "i"));
-            await productsPage.getAddToCartButtonById("3").click();
+            await productsListPage.open();
+            await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
+            await productsListPage.searchProduct(testData.search.sleevelessDressProduct);
+            await expect(productsListPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
+            await expect(productsListPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
+            await expect(productsListPage.productList, 'There should be exactly one product displayed').toHaveCount(1);
+            await expect(productsListPage.productNames.first()).toHaveText(new RegExp(testData.search.sleevelessDressProduct, "i"));
+            await productsListPage.getAddToCartButtonById("3").click();
         });
 
         await test.step('Verify added to cart modal and continue shopping', async () => {
-            await modal.waitForOpen();
-            await expect(modal.modalTitle).toHaveText("Added!");
-            await expect(modal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
-            await modal.clickContinueShopping();
-            await expect(modal.modal).toBeHidden();
+            await addedToCartModal.waitForOpen();
+            await expect(addedToCartModal.modalTitle).toHaveText("Added!");
+            await expect(addedToCartModal.modalDescription).toHaveText(testData.messages.addedToCartMsg);
+            await addedToCartModal.clickContinueShopping();
+            await expect(addedToCartModal.modal).toBeHidden();
         });
 
         await test.step('Verify product is in the cart before login', async () => {
@@ -187,3 +187,34 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
         });
     });
 });
+
+test.describe('Negative scenarios - Sign up', { tag: '@regression' }, () => {
+
+    test("User can't sign up with invalid email format", async ({ homePage, loginPage }) => {
+        await homePage.open();
+        await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
+
+        await loginPage.open();
+
+        await test.step('Attempt sign up with malformed email', async () => {
+            await loginPage.usernameInput.fill('Test');
+            await loginPage.signUpEmailInput.fill('not-an-email-format');
+            await loginPage.signUpButton.click();
+        });
+
+        await test.step('Verify browser blocks submission via native email validation', async () => {
+            const isValid = await loginPage.signUpEmailInput.evaluate(
+                (el: HTMLInputElement) => el.validity.valid
+            );
+            expect(isValid, 'Email field should be flagged as invalid by the browser').toBe(false);
+
+            // Also confirms the form never actually submitted
+            await expect(loginPage.newUserSignUpTitle, 'Should remain on sign up form, not proceed to account info').toBeVisible();
+        });
+    });
+
+});
+
+
+
+

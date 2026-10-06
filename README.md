@@ -53,6 +53,25 @@ are automated, organized below by journey.
 - [Test Case 6: Contact Us Form](https://automationexercise.com/test_cases#collapse6)
 - [Test Case 7: Verify Test Cases Page](https://automationexercise.com/test_cases#collapse7)
 
+## Additional negative scenarios
+Beyond the 26 official test cases, the following negative scenarios were added
+to strengthen coverage around form validation and error handling. These are not
+part of the official AutomationExercise test case list, so they have no
+corresponding test case number.
+
+### Account management
+- User can't log in with empty email and password
+- User can't sign up with invalid email format
+
+### Product browsing & search
+- Searching for a nonexistent product shows no results
+
+### Checkout & orders
+- User cannot submit payment with empty required fields
+
+### Contact & static pages
+- Contact Us form cannot be submitted with empty required fields
+
 ## Project structure
  - `pages/` — Page Object classes (BasePage, CartPage, CheckoutPage, HomePage, LoginPage, PaymentPage, ProductsListPage, ProductDetailsPage, ContactUsPage, DeleteAccountPage, SignUpPage, AccountCreatedPage, TestCasesListPage)
  - `components/` — reusable UI components (AddedToCartModal, CheckoutRegisterLoginModal)

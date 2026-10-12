@@ -1,6 +1,5 @@
 import { test, expect } from '../../fixtures/index';
 import { testData } from '../../test-data/testData';
-import { generateRandomEmail } from '../../utils/random';
 
 test.describe('Negative scenarios - Payment', { tag: '@regression' }, () => {
 
@@ -35,7 +34,7 @@ test.describe('Negative scenarios - Payment', { tag: '@regression' }, () => {
         });
 
         await test.step('Verify order is not placed', async () => {
-            await expect(paymentPage.orderPlacedTitle, 'Order placed confirmation should NOT appear').not.toBeVisible();
+            await expect(paymentPage.orderPlacedTitle, 'Order placed confirmation should NOT appear').toBeHidden();
         });
     });
 

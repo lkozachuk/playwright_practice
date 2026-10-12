@@ -14,6 +14,7 @@ test.describe('Product listing and search', { tag: '@regression' }, () => {
             await expect(productsListPage.productListTitle, 'Product list title should be "All Products"').toHaveText(testData.search.allProductsTitle);
             await productsListPage.searchProduct(testData.search.sleevelessDressProduct);
         });
+
         await test.step('Verify search results contain the searched product', async () => {
             await expect(productsListPage.productListTitle).toHaveText(testData.search.searchedProductsTitle);
             await expect(productsListPage.productList, 'Product list should not be empty after search').not.toBeEmpty();
@@ -41,6 +42,7 @@ test.describe('Product listing and search', { tag: '@regression' }, () => {
             await expect(productsListPage.productNames.first()).toHaveText(/Blue Top/i);
             await expect(productsListPage.productPrices.first()).toHaveText(/Rs. 500/i);
         });
+
         // Click on the first product to open its details page
         await productsListPage.viewDetailsProductList.first().click();
 

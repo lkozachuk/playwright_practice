@@ -38,9 +38,9 @@ test.describe('Cart page tests', { tag: ['@smoke', '@regression'] }, () => {
             randomIndex = Math.floor(Math.random() * productsCount);
 
             productName = await homePage.getOwnText(homePage.productsList.nth(randomIndex).locator("p").nth(0));
-            await expect(productName, 'Product name should not be empty').toBeTruthy();
+            expect(productName, 'Product name should not be empty').toBeTruthy();
             productPrice = await homePage.getOwnText(homePage.getProductPriceByName(productName || "First product name not found"));
-            await expect(productPrice, 'Product price should not be empty').toBeTruthy();
+            expect(productPrice, 'Product price should not be empty').toBeTruthy();
         });
 
         await test.step('Open the selected product details page', async () => {

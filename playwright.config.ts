@@ -22,7 +22,7 @@ export default defineConfig({
   /* Run CI tests serially (1 worker) for more stable, predictable results and easier debugging of CI failures, even though fullyParallel is enabled for local runs. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [['html'], ['github']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */

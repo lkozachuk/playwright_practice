@@ -117,8 +117,9 @@ This project includes a `.vscode/mcp.json` config for the Playwright MCP server,
 - Not part of the automated test suite or CI pipeline
 
 ## CI/CD
-- **On PR to `main`:** smoke tests (`@smoke`) run on Chromium only, for fast feedback before merge
-- **Nightly (weekdays, 05:00 Kyiv time) and manual trigger:** full regression suite runs across Chromium, Firefox, and WebKit
+- **On PR to `main`:** typecheck and lint run first, then smoke tests (`@smoke`) run on Chromium only — chosen for fast feedback before merge; full cross-browser coverage runs nightly instead.
+- **Nightly (weekdays, 05:00 Kyiv time) and manual trigger:** typecheck and lint run once in a dedicated `validate` job; once that passes, the full regression suite runs across Chromium, Firefox, and WebKit in parallel.
+- **Failure diagnostics:** failed runs write a summary directly to the GitHub Actions job summary, and the Playwright HTML report (including screenshots, videos, and traces) is uploaded as a build artifact per browser (30-day retention).
 - Workflow file: `.github/workflows/playwright.yml`
 - HTML reports are uploaded as build artifacts (30-day retention)
 

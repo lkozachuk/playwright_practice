@@ -30,11 +30,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint  
+
       - name: Install Playwright Browsers (Chromium only)
         run: npx playwright install --with-deps chromium
 
       - name: Run smoke tests on Chromium
         run: npx playwright test --grep @smoke --project=chromium
+
+      - name: Write failure summary
+        if: failure()
+        run: echo "❌ Smoke tests failed on Chromium. Download the 'playwright-report-smoke' artifact above for full trace/screenshot details." >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Playwright Report
         if: ${{ !cancelled() }}
@@ -44,8 +54,20 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  validate:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: lts/*, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint        
+
   # Runs nightly and on manual trigger: full suite, all browsers
   full-regression:
+    needs: validate
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -55,20 +77,23 @@ jobs:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci   
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
       - name: Run full test suite
         run: npx playwright test --project=${{ matrix.browser }}
+
+      - name: Write failure summary
+        if: failure()
+        run: echo "❌ Full regression tests failed on ${{ matrix.browser }}. Download the 'playwright-report-${{ matrix.browser }}' artifact above for full trace/screenshot details." >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Playwright Report
         if: ${{ !cancelled() }}

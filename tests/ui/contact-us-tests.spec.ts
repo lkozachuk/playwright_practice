@@ -54,7 +54,7 @@ test.describe('Negative scenarios - Contact Us', { tag: '@regression' }, () => {
         });
 
         await test.step('Verify success message is not shown', async () => {
-            await expect(contactUsPage.successMessage, 'Success message should NOT appear for empty submission').not.toBeVisible();
+            await expect(contactUsPage.successMessage, 'Success message should NOT appear for empty submission').toBeHidden();
         });
     });
 

@@ -179,6 +179,7 @@ test.describe('User login and sign up', { tag: ['@smoke', '@regression'] }, () =
             await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
             await expect(homePage.getLoggedInText("Test"), 'User should be logged in').toBeVisible();
         });
+
         await test.step('Verify product is still in the cart after login', async () => {
             await cartPage.open();
             await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();

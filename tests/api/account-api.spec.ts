@@ -1,14 +1,15 @@
+import { buildAccount } from '../../factories/accountFactory';
 import { test, expect } from '../../fixtures/index';
-import { testData } from '../../test-data/testData';
-import { generateRandomEmail } from '../../utils/random';
+import { GetUserDetailResponseSchema } from '../../schemas/accountSchemas';
 
 test.describe('Account API - Create, Read, Update, Delete operations', { tag: '@regression' }, () => {
 
-    test('API: verifyLogin returns 200 for valid credentials', async ({ accountApiClient }) => {
-        const email = generateRandomEmail();
-        await accountApiClient.createAccount('Test', email, testData.signUp.password);
+    test('API: verifyLogin returns 200 for valid credentials', async ({ accountApiClient, testAccount }) => {
+        const account = buildAccount();
+        await accountApiClient.createAccount(account.name, account.email, account.password);
+        testAccount.register(account.email, account.password);
 
-        const result = await accountApiClient.verifyLogin(email, testData.signUp.password);
+        const result = await accountApiClient.verifyLogin(account.email, account.password);
         expect(result.responseCode, 'Valid credentials should return 200').toBe(200);
         expect(result.message, 'Response should confirm user exists').toBe('User exists!');
     });
@@ -19,46 +20,33 @@ test.describe('Account API - Create, Read, Update, Delete operations', { tag: '@
         expect(result.message, 'Response should confirm user not found').toBe('User not found!');
     });
 
-    test('API: updateAccount successfully updates user details', async ({ accountApiClient }) => {
-        const email = generateRandomEmail();
-        await accountApiClient.createAccount('Test', email, testData.signUp.password);
+    test('API: updateAccount successfully updates user details', async ({ accountApiClient, testAccount }) => {
+        const account = buildAccount();
+        await accountApiClient.createAccount(account.name, account.email, account.password);
+        testAccount.register(account.email, account.password);
 
-        const result = await accountApiClient.updateAccount({
-            name: 'Test',
-            email,
-            password: testData.signUp.password,
-            title: 'Mr',
-            birth_date: testData.signUp.birthDay,
-            birth_month: testData.signUp.birthMonth,
-            birth_year: testData.signUp.birthYear,
+        const updatedAccount = buildAccount({
+            email: account.email,
+            password: account.password,
             firstname: 'UpdatedFirstName',
-            lastname: testData.signUp.lastName,
-            company: testData.signUp.companyName,
-            address1: testData.signUp.address,
-            address2: '',
-            country: testData.signUp.country,
-            zipcode: testData.signUp.zipCode,
-            state: testData.signUp.state,
-            city: testData.signUp.city,
-            mobile_number: testData.signUp.mobileNumber,
         });
 
+        const result = await accountApiClient.updateAccount(updatedAccount);
         expect(result.responseCode, 'Account should be updated successfully').toBe(200);
         expect(result.message, 'Response should confirm user updated').toBe('User updated!');
     });
 
-    test('API: getUserDetailByEmail returns correct user data', async ({ accountApiClient }) => {
-        const email = generateRandomEmail();
-        await accountApiClient.createAccount('Test', email, testData.signUp.password);
-
-        const result = await accountApiClient.getUserDetailByEmail(email);
+    test('API: getUserDetailByEmail returns correct user data matching expected schema', async ({ accountApiClient, testAccount }) => {
+        const account = buildAccount();
+        await accountApiClient.createAccount(account.name, account.email, account.password);
+        testAccount.register(account.email, account.password);
+ 
+        const result = await accountApiClient.getUserDetailByEmail(account.email);
         expect(result.responseCode, 'Should return 200').toBe(200);
-        expect(result.user.email, 'Returned user email should match').toBe(email);
-    });
-
-    test.afterEach(async ({ accountApiClient }) => {
-        // cleanup handled per-test once the testAccount fixture pattern is wired in;
-        // for now, each test above creates its own account without deleting it
+        expect(result.user.email, 'Returned user email should match').toBe(account.email);
+ 
+        const parsed = GetUserDetailResponseSchema.safeParse(result);
+        expect(parsed.success, `Response should match expected schema. Errors: ${JSON.stringify(parsed.error?.issues)}`).toBe(true);
     });
 
 });

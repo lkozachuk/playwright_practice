@@ -122,6 +122,7 @@ This project includes a `.vscode/mcp.json` config for the Playwright MCP server,
 - **Failure diagnostics:** failed runs write a summary directly to the GitHub Actions job summary, and the Playwright HTML report (including screenshots, videos, and traces) is uploaded as a build artifact per browser (30-day retention).
 - Workflow file: `.github/workflows/playwright.yml`
 - HTML reports are uploaded as build artifacts (30-day retention)
+- **Note:** direct pushes to `main` do not trigger any job — all changes are expected to go through a PR, which is already gated by the `smoke` job above.
 
 ## Browser coverage
 Chromium, Firefox, WebKit

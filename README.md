@@ -59,6 +59,29 @@ to strengthen coverage around form validation and error handling. These are not
 part of the official AutomationExercise test case list, so they have no
 corresponding test case number.
 
+## API test coverage
+[#api-test-coverage](#api-test-coverage)
+
+Beyond UI automation, this framework includes dedicated API-level test coverage
+for account management, using a typed `AccountApiClient`:
+
+| Operation | API endpoint | Test location |
+|---|---|---|
+| Create account | `POST /api/createAccount` | `tests/api/account-api.spec.ts` |
+| Verify login (valid/invalid) | `POST /api/verifyLogin` | `tests/api/account-api.spec.ts` |
+| Update account | `PUT /api/updateAccount` | `tests/api/account-api.spec.ts` |
+| Get user detail by email | `GET /api/getUserDetailByEmail` | `tests/api/account-api.spec.ts` |
+| Delete account | `DELETE /api/deleteAccount` | used for automatic test cleanup |
+
+Response shapes are validated at runtime using [zod](https://zod.dev) schemas
+(`schemas/accountSchemas.ts`), catching any mismatch between the documented API
+contract and the actual response — not just checking individual fields ad hoc.
+
+An API → UI test (`tests/e2e/update-account-api-to-ui.spec.ts`) verifies that a
+change made via the API (updating an account's name) is correctly reflected
+when viewing the same account through the UI, confirming the two layers stay
+in sync.
+
 ### Account management
 - User can't log in with empty email and password
 - User can't sign up with invalid email format
@@ -76,7 +99,12 @@ corresponding test case number.
  - `pages/` — Page Object classes (BasePage, CartPage, CheckoutPage, HomePage, LoginPage, PaymentPage, ProductsListPage, ProductDetailsPage, ContactUsPage, DeleteAccountPage, SignUpPage, AccountCreatedPage, TestCasesListPage)
  - `components/` — reusable UI components (AddedToCartModal, CheckoutRegisterLoginModal)
  - `fixtures/` — custom Playwright fixtures; injects page objects, components, and API clients into tests, removing manual instantiation
+ - `api/` — API client classes for direct backend requests (e.g. AccountApiClient)
+ - `models/` — typed interfaces describing API request/response shapes (e.g. Account.ts)
+ - `factories/` — functions that build complete, valid test data objects with sensible defaults (e.g. accountFactory.ts)
+ - `schemas/` — zod schemas for runtime validation of API responses against expected shape
  - `tests/ui/` — UI-only test specs
+ - `tests/api/` — API-only test specs (no browser involved)
  - `tests/e2e/` — combined API + UI test specs
  - `test-data/` — credentials and test inputs
  - `utils/` — helper functions (e.g. random email generator)
@@ -134,6 +162,10 @@ Chromium, Firefox, WebKit
 
 ## Design decisions
 - **No `storageState` / pre-authenticated sessions.** Playwright supports reusing a logged-in session via `storageState` to skip repeating login steps across tests. This framework intentionally does not use it: most covered test cases are full user journeys (registration, login, search, cart, checkout) where the login step itself is part of what's being verified, not incidental setup. Bypassing it with a stored session would mean these flows no longer reflect real user behavior end-to-end. This is a deliberate tradeoff — tests run slower and create more accounts via the API than a session-reuse approach would — but each test more accurately simulates what a real user experiences. If future test cases need to verify behavior unrelated to login itself (e.g. account settings, order history), `storageState` may be reconsidered for that specific subset — but the current suite's journeys are chosen specifically because login is part of the scenario.
+
+- **Test data built via factories, not hardcoded inline.** Account data (`factories/accountFactory.ts`) is generated with sensible defaults and a fresh random email per call, with only the fields relevant to a specific test overridden. This avoids duplicating ~15 fields across every test file and keeps each test's actual intent readable at a glance.
+
+- **Automatic API cleanup.** Tests that create an account via the API register it with a `testAccount` fixture (`fixtures/api.fixture.ts`), which deletes the account during teardown — even if the test fails partway through. This keeps the suite from accumulating orphaned accounts on the live site over repeated runs.
 
 
 ## Known limitations

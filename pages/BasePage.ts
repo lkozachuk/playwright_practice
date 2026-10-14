@@ -10,7 +10,7 @@ export class BasePage {
 
     constructor(page: Page) {
         this.page = page;
-        this.subscriptionFieldName = page.getByText("Subscription");
+        this.subscriptionFieldName = page.getByText("Subscription", { exact: true });
         this.subscriptionInput = page.getByPlaceholder("Your email address");
         this.subscriptionBtn = page.locator("#subscribe");
         this.subscribeSuccessMsg = page.locator('.alert-success');

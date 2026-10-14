@@ -190,7 +190,7 @@ test.describe('Checkout page tests', { tag: ['@smoke', '@regression'] }, () => {
             await expect(cartPage.cartTable, 'Cart table should be visible').toBeVisible();
             await expect(cartPage.cartTableRows, 'There should be exactly two products in the cart').toHaveCount(2);
             await cartPage.cartProceedCheckout.click();
-
+            await cartPage.closeGoogleVignette();
             await expect(checkoutPage.title, "Checkout page should have Address Details title").toBeVisible();
         });
 

@@ -103,6 +103,8 @@ test.describe('E2E scenarios, combination of API + UI flows', { tag: '@regressio
         await checkoutPage.orderCommentTextarea.fill(testData.messages.checkoutOrderComment);
         await checkoutPage.placeOrderBtn.click();
 
+        await checkoutPage.closeGoogleVignette();
+
         await expect(paymentPage.title, 'Payment page title should be visible').toBeVisible();
 
         await paymentPage.fillCreditCardData(testData.payment.validCreditCard.name, testData.payment.validCreditCard.cardNumber,
@@ -160,6 +162,8 @@ test.describe('E2E scenarios, combination of API + UI flows', { tag: '@regressio
         await expect(cartPage.cartTableRows, 'There should be exactly two products in the cart').toHaveCount(2);
         await cartPage.cartProceedCheckout.click();
 
+        await cartPage.closeGoogleVignette();
+
         await expect(checkoutPage.title, "Checkout page should have Address Details title").toBeVisible();
         await expect(checkoutPage.billingAddress, 'Billing address component should have header').toContainText("Your billing address");
 
@@ -186,6 +190,7 @@ test.describe('E2E scenarios, combination of API + UI flows', { tag: '@regressio
         const download = await paymentPage.downloadInvoice();
         expect(download.suggestedFilename()).toBeTruthy();
         await paymentPage.continueBtn.click();
+        await homePage.closeGoogleVignette();
         await expect(homePage.slider, 'Slider should be visible on the Home page').toBeVisible();
 
         await deleteAccountPage.open();

@@ -1,7 +1,7 @@
 import { type Locator, type Page } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
-export class CheckoutPage {
-    readonly page: Page;
+export class CheckoutPage extends BasePage {
     readonly title: Locator;
     readonly deliveryAddress: Locator;
     readonly billingAddress: Locator;
@@ -13,7 +13,7 @@ export class CheckoutPage {
     readonly cartProductsPrice: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.title = page.getByRole('heading', { name: 'Address Details' });
         this.deliveryAddress = page.locator('#address_delivery');
         this.billingAddress = page.locator('#address_invoice');

@@ -1,4 +1,6 @@
-# Playwright TypeScript Automation Framework
+# Playwright TypeScript Automation Framework
+
+![Playwright Tests](https://github.com/lkozachuk/playwright_practice/actions/workflows/playwright.yml/badge.svg)
 
 A greenfield UI/API automation framework demonstrating scalable test architecture, 
 reusable page/component abstractions, API integration, test-data management, 
@@ -10,6 +12,66 @@ cross-browser execution, CI/CD, and reporting.
 ## Tech stack
 - Playwright (TypeScript)
 - Node.js 24.x (Active LTS)
+
+## Architecture
+### How the pieces connect
+[Mermaid flowchart — relationships and data flow]
+
+```mermaid
+graph TD
+    subgraph Tests
+        UI[tests/ui]
+        API[tests/api]
+        E2E[tests/e2e]
+    end
+
+    subgraph Fixtures
+        PF[fixtures/pages.fixture.ts]
+        AF[fixtures/api.fixture.ts]
+        IDX[fixtures/index.ts]
+    end
+
+    subgraph "Page Layer"
+        Pages[pages/]
+        Components[components/]
+    end
+
+    subgraph "API Layer"
+        Client[api/AccountApiClient.ts]
+        Models[models/Account.ts]
+        Factories[factories/accountFactory.ts]
+        Schemas[schemas/accountSchemas.ts]
+    end
+
+    UI --> PF
+    E2E --> IDX
+    API --> IDX
+    IDX --> PF
+    IDX --> AF
+    PF --> Pages
+    PF --> Components
+    AF --> Client
+    Client --> Models
+    Client --> Schemas
+    API --> Factories
+    E2E --> Factories
+
+    subgraph "External"
+        Site[automationexercise.com]
+    end
+
+    Pages --> Site
+    Client --> Site
+
+    subgraph CI
+        PR[PR: smoke + lint + typecheck]
+        Nightly[Nightly: full regression, 3 browsers]
+    end
+
+    UI -.-> PR
+    API -.-> PR
+    E2E -.-> Nightly
+```
 
 ## Covered user journeys
 All 26 official [AutomationExercise test cases](https://automationexercise.com/test_cases)
@@ -59,6 +121,19 @@ to strengthen coverage around form validation and error handling. These are not
 part of the official AutomationExercise test case list, so they have no
 corresponding test case number.
 
+### Account management
+- User can't log in with empty email and password
+- User can't sign up with invalid email format
+
+### Product browsing & search
+- Searching for a nonexistent product shows no results
+
+### Checkout & orders
+- User cannot submit payment with empty required fields
+
+### Contact & static pages
+- Contact Us form cannot be submitted with empty required fields
+
 ## API test coverage
 [#api-test-coverage](#api-test-coverage)
 
@@ -81,19 +156,6 @@ An API → UI test (`tests/e2e/update-account-api-to-ui.spec.ts`) verifies that 
 change made via the API (updating an account's name) is correctly reflected
 when viewing the same account through the UI, confirming the two layers stay
 in sync.
-
-### Account management
-- User can't log in with empty email and password
-- User can't sign up with invalid email format
-
-### Product browsing & search
-- Searching for a nonexistent product shows no results
-
-### Checkout & orders
-- User cannot submit payment with empty required fields
-
-### Contact & static pages
-- Contact Us form cannot be submitted with empty required fields
 
 ## Project structure
  - `pages/` — Page Object classes (BasePage, CartPage, CheckoutPage, HomePage, LoginPage, PaymentPage, ProductsListPage, ProductDetailsPage, ContactUsPage, DeleteAccountPage, SignUpPage, AccountCreatedPage, TestCasesListPage)

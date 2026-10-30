@@ -178,6 +178,8 @@ test.describe('E2E scenarios, combination of API + UI flows', { tag: '@regressio
         await checkoutPage.orderCommentTextarea.fill(testData.messages.checkoutOrderComment);
         await checkoutPage.placeOrderBtn.click();
 
+        await paymentPage.closeGoogleVignette();
+
         await expect(paymentPage.title, 'Payment page title should be visible').toBeVisible();
 
         await paymentPage.fillCreditCardData(testData.payment.validCreditCard.name, testData.payment.validCreditCard.cardNumber,
